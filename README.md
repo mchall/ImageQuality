@@ -1,7 +1,7 @@
 # Brisque
 > Blind/Referenceless Image Spatial QUality Evaluator (BRISQUE) is a natural scene statistic (NSS)-based distortion-generic blind/no-reference (NR) image quality assessment (IQA) model which operates in the spatial domain. It does not compute distortion specific features such as ringing, blur or blocking, but instead uses scene statistics of locally normalized luminance coefficients to quantify possible losses of ‘naturalness’ in the image due to the presence of distortions, thereby leading to a holistic measure of quality.
 
-![Screenshot](http://mcsyko.github.io/Images/Brisque/screen.png)
+![Screenshot](http://mchall.github.io/Images/Brisque/screen.png)
 
 ## Usage ##
 
