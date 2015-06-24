@@ -9,8 +9,8 @@ namespace ImageQuality
 	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<unsigned char>^ buffer)
 	{
 		pin_ptr<unsigned char> p = &buffer[0];
-		cv::Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);
-		cv::Mat image = cv::imdecode(data, CV_LOAD_IMAGE_GRAYSCALE);
+		Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);
+		Mat image = imdecode(data, CV_LOAD_IMAGE_GRAYSCALE);
 
 		int newHeight = (256 / double(image.cols)) * image.rows;
 		resize(image, image, Size(256, newHeight));

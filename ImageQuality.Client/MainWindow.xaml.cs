@@ -44,6 +44,9 @@ namespace ImageQualityClient
 
                 var fileBytes = File.ReadAllBytes(ofd.FileName);
 
+                SceneText t = new SceneText();
+                t.DetectRegions(fileBytes);
+
                 var features = _defaultBrisque.Features(fileBytes);
                 DefaultScoreText.Text = Math.Round(_defaultBrisque.Score(features), 2).ToString();
                 CustomScoreText.Text = Math.Round(_customBrisque.Score(features), 2).ToString();
