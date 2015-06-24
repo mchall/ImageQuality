@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using Tesseract;
+using System.Linq;
 
 namespace ImageQuality
 {
@@ -28,7 +29,7 @@ namespace ImageQuality
                 MemoryStream ms = new MemoryStream(fileBytes);
                 var bmp = (Bitmap)Bitmap.FromStream(ms);
 
-                foreach (var region in regions)
+                foreach (var region in OrderRegions(regions))
                 {
                     using (var page = _ocr.Process(bmp, new Rect(region.X, region.Y, region.Width, region.Height)))
                     {
@@ -37,7 +38,19 @@ namespace ImageQuality
                 }
             }
 
-            return sb.ToString(); //TODO: order and check inner/outer relationship
+            return sb.ToString();
+        }
+
+        private List<Region> OrderRegions(IList<Region> regions)
+        {
+            var sort = regions.ToList();
+            sort.Sort((l, r) =>
+                {
+                    if (l.Y == r.Y)
+                        return l.X.CompareTo(r.X);
+                    return l.Y.CompareTo(r.Y);
+                });
+            return sort;
         }
     }
 }
