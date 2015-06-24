@@ -28,8 +28,6 @@ namespace ImageQuality
 		morphKernel = getStructuringElement(MORPH_RECT, Size(9, 1));
 		morphologyEx(bw, connected, MORPH_CLOSE, morphKernel);
 
-		imshow("bw", bw);
-
 		Mat mask = Mat::zeros(bw.size(), CV_8UC1);
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
@@ -47,15 +45,14 @@ namespace ImageQuality
 
 			if (r > .45 && rect.height > 8 && rect.width > 8)
 			{
-				rectangle(rgb, rect, Scalar(0, 255, 0), 2);
+				//rectangle(rgb, rect, Scalar(0, 255, 0), 2);
 
 				Region^ region = gcnew Region(rect.x * 2, rect.y * 2, rect.width * 2, rect.height * 2);
 				list->Add(region);
 			}
 		}
 
-		pyrUp(rgb, rgb);
-		imshow("rgb", rgb);
+		//imshow("rgb", rgb);
 		return list;		
 	}
 }
