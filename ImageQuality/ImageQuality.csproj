@@ -7,8 +7,8 @@
     <ProjectGuid>{298A2508-5472-47B5-9F50-AC4FEB638FAD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Brisque</RootNamespace>
-    <AssemblyName>Brisque</AssemblyName>
+    <RootNamespace>ImageQuality</RootNamespace>
+    <AssemblyName>ImageQuality</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -43,9 +43,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BrisqueFeatureExtractor\BrisqueFeatureExtractor.vcxproj">
+    <ProjectReference Include="..\ImageQuality.OpenCV\ImageQuality.OpenCV.vcxproj">
       <Project>{cf50f6f0-665d-4faf-90e2-3b9fae8641ea}</Project>
-      <Name>BrisqueFeatureExtractor</Name>
+      <Name>ImageQuality.OpenCV</Name>
     </ProjectReference>
     <ProjectReference Include="..\SVM\SVM.csproj">
       <Project>{97831c85-e59b-49f7-b720-22fb31608c83}</Project>

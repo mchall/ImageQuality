@@ -10,7 +10,7 @@ using namespace System::Collections::Generic;
 using namespace std;
 using namespace cv;
 
-namespace Brisque {
+namespace ImageQuality {
 
 public ref class BrisqueFeatureExtractor
 {

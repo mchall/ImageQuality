@@ -15,7 +15,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>KorbitecVision</RootNamespace>
-    <ProjectName>BrisqueFeatureExtractor</ProjectName>
+    <ProjectName>ImageQuality.OpenCV</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

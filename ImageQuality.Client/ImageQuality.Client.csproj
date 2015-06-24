@@ -7,8 +7,8 @@
     <ProjectGuid>{2A464D58-7E58-4B78-8C78-0F1593766EEF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrisqueClient</RootNamespace>
-    <AssemblyName>BrisqueClient</AssemblyName>
+    <RootNamespace>ImageQualityClient</RootNamespace>
+    <AssemblyName>ImageQualityClient</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -97,9 +97,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Brisque\Brisque.csproj">
+    <ProjectReference Include="..\ImageQuality\ImageQuality.csproj">
       <Project>{298a2508-5472-47b5-9f50-ac4feb638fad}</Project>
-      <Name>Brisque</Name>
+      <Name>ImageQuality</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

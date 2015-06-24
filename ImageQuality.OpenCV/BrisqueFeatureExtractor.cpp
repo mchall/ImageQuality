@@ -4,7 +4,7 @@
 using namespace std;
 using namespace cv;
 
-namespace Brisque
+namespace ImageQuality
 {
 	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<unsigned char>^ buffer)
 	{

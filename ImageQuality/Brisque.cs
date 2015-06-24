@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using SVM;
 
-namespace Brisque
+namespace ImageQuality
 {
     public class Brisque
     {

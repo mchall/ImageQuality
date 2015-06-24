@@ -6,17 +6,18 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using ImageQuality;
 using Microsoft.Win32;
 
-namespace BrisqueClient
+namespace ImageQualityClient
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Brisque.Brisque _defaultBrisque;
-        private Brisque.Brisque _customBrisque;
+        private Brisque _defaultBrisque;
+        private Brisque _customBrisque;
 
         private List<string> _trainingFiles;
         private int _trainingIndex;
@@ -26,8 +27,8 @@ namespace BrisqueClient
             InitializeComponent();
 
             _trainingFiles = new List<string>();
-            _defaultBrisque = new Brisque.Brisque(ReadResource("BrisqueClient.default_model"));
-            _customBrisque = new Brisque.Brisque(ReadResource("BrisqueClient.custom_model"));
+            _defaultBrisque = new Brisque(ReadResource("ImageQualityClient.default_model"));
+            _customBrisque = new Brisque(ReadResource("ImageQualityClient.custom_model"));
         }
 
         private void ScoreImage_Click(object sender, RoutedEventArgs e)
