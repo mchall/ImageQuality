@@ -1,9 +1,6 @@
 #pragma once
 
-#include <fstream>
-#include <vector>
-#include <iostream>
-#include <iomanip>
+#include "Region.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -15,6 +12,6 @@ namespace ImageQuality {
 	public ref class SceneTextRegionExtractor
 	{
 	public:
-		IList<double>^ GetRegions(array<unsigned char>^ buffer);
+		IList<Region^>^ GetRegions(array<unsigned char>^ buffer);
 	};
 }

@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<double>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer)
+	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer)
 	{
 		pin_ptr<unsigned char> px = &buffer[0];
 		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
@@ -33,7 +33,7 @@ namespace ImageQuality
 		vector<Vec4i> hierarchy;
 		findContours(connected, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		List<double>^ list = gcnew List<double>(5);
+		List<Region^>^ list = gcnew List<Region^>(5);
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 		{
 			Rect rect = boundingRect(contours[idx]);
@@ -46,6 +46,9 @@ namespace ImageQuality
 			if (r > .45 && rect.height > 8 && rect.width > 8)
 			{
 				rectangle(rgb, rect, Scalar(0, 255, 0), 2);
+
+				Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
+				list->Add(region);
 			}
 		}
 

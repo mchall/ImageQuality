@@ -107,12 +107,14 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BrisqueFeatureExtractor.h" />
+    <ClInclude Include="Region.h" />
     <ClInclude Include="SceneTextRegionExtractor.h" />
     <ClInclude Include="Stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BrisqueFeatureExtractor.cpp" />
+    <ClCompile Include="Region.cpp" />
     <ClCompile Include="SceneTextRegionExtractor.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

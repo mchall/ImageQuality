@@ -16,7 +16,7 @@ namespace ImageQuality
 
         public void DetectRegions(byte[] fileBytes)
         {
-            _extractor.GetRegions(fileBytes);
+            var r = _extractor.GetRegions(fileBytes);
         }
     }
 }
