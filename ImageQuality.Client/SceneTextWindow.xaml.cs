@@ -30,11 +30,18 @@ namespace ImageQualityClient
             ofd.Filter = "Image|*.jpg;*.png";
             if (ofd.ShowDialog() == true)
             {
-                Image.Source = new BitmapImage(new Uri(ofd.FileName));
-
                 var fileBytes = File.ReadAllBytes(ofd.FileName);
 
-                ResultText.Text = _sceneText.DetectRegions(fileBytes).Trim();
+                byte[] regionImg;
+                ResultText.Text = _sceneText.DetectRegions(fileBytes, out regionImg).Trim();
+
+                MemoryStream ms = new MemoryStream(regionImg);
+                var imageSource = new BitmapImage();
+                imageSource.BeginInit();
+                imageSource.StreamSource = ms;
+                imageSource.EndInit();
+
+                Image.Source = imageSource;
             }
         }
     }

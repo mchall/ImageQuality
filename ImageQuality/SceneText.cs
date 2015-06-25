@@ -21,19 +21,26 @@ namespace ImageQuality
 
         public string DetectRegions(byte[] fileBytes)
         {
+            byte[] debug;
+            return DetectRegions(fileBytes, out debug);
+        }
+
+        public string DetectRegions(byte[] fileBytes, out byte[] debugBytes)
+        {
             StringBuilder sb = new StringBuilder();
 
-            var regions = _extractor.GetRegions(fileBytes);
-            if (regions.Count > 0)
+            using (var ocrImg = new MemoryStream())
+            using (var debugImg = new MemoryStream())
             {
-                MemoryStream ms = new MemoryStream(fileBytes);
-                var bmp = (Bitmap)Bitmap.FromStream(ms);
+                var regions = _extractor.GetRegions(fileBytes, ocrImg, debugImg);
+                var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray());
+                debugBytes = debugImg.ToArray();
 
                 foreach (var region in OrderRegions(regions))
                 {
-                    using (var page = _ocr.Process(bmp, new Rect(region.X, region.Y, region.Width, region.Height)))
+                    using (var page = _ocr.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
                     {
-                        sb.AppendLine(page.GetText());
+                        sb.AppendLine(page.GetText().Trim());
                     }
                 }
             }
