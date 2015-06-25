@@ -197,3 +197,4 @@ FakesAssemblies/
 
 # Exceptions
 !ImageQuality.OpenCV/OpenCV/*
+!ImageQuality.OpenCV/OpenCV/x64/vc12/*
