@@ -5,7 +5,9 @@
 
 ## Usage ##
 
-Put **OpenCV** in '/BrisqueFeatureExtractor/OpenCV' folder. 
+Ensure OpenCV 3.0 is installed in C:\OpenCV\
+
+Download OpenCV here: http://opencv.org/
 
 Instantiate Brisque with the text from a model file (demo project includes default BRISQUE model, and custom trained model)
 
