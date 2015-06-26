@@ -20,29 +20,23 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            using (var redDetect = new MemoryStream())
+            using (var red = new MemoryStream())
+            using (var yellow = new MemoryStream())
+            using (var white = new MemoryStream())
+            using (var black = new MemoryStream())
             {
-                _extractor.Red(fileBytes, redDetect);
-                sb.AppendLine(OcrImage(redDetect.ToArray()));
-            }
-            using (var whiteDetect = new MemoryStream())
-            {
-                _extractor.White(fileBytes, whiteDetect);
-                sb.AppendLine(OcrImage(whiteDetect.ToArray()));
-            }
-            using (var blackDetect = new MemoryStream())
-            {
-                _extractor.Black(fileBytes, blackDetect);
-                sb.AppendLine(OcrImage(blackDetect.ToArray()));
+                _extractor.SimpleWatermark(fileBytes, red, yellow, black, white);
+                OcrImage(sb, red.ToArray());
+                OcrImage(sb, yellow.ToArray());
+                OcrImage(sb, black.ToArray());
+                OcrImage(sb, white.ToArray());
             }
 
             return sb.ToString();
         }
 
-        private string OcrImage(byte[] ocrImg)
+        private void OcrImage(StringBuilder sb, byte[] ocrImg)
         {
-            StringBuilder sb = new StringBuilder();
-
             var pix = Pix.LoadTiffFromMemory(ocrImg);
 
             using (var page = _ocr.Process(pix))
@@ -56,8 +50,6 @@ namespace ImageQuality
                     }
                 }
             }
-
-            return sb.ToString();
         }
     }
 }

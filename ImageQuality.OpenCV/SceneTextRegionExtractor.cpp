@@ -6,53 +6,43 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	void SceneTextRegionExtractor::Red(array<unsigned char>^ buffer, Stream^ ocrImgStream)
+	void SceneTextRegionExtractor::SimpleWatermark(array<unsigned char>^ buffer, Stream^ redStream, Stream^ yellowStream, Stream^ blackStream, Stream^ whiteStream)
 	{
 		pin_ptr<unsigned char> px = &buffer[0];
-		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
 
-		inRange(img, Scalar(0, 0, 200), Scalar(50, 50, 255), img);
-
-		if (ocrImgStream != nullptr)
+		Mat red, yellow, black, white;
+		if (redStream != nullptr)
 		{
-			WriteToStream(".tiff", img, ocrImgStream);
+			inRange(img, Scalar(0, 0, 200), Scalar(50, 50, 255), red);
+			WriteToStream(".tiff", red, redStream);
 		}
-	}
 
-	void SceneTextRegionExtractor::White(array<unsigned char>^ buffer, Stream^ ocrImgStream)
-	{
-		pin_ptr<unsigned char> px = &buffer[0];
-		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
-
-		inRange(img, Scalar(225, 225, 225), Scalar(255, 255, 255), img);
-
-		if (ocrImgStream != nullptr)
+		if (yellowStream != nullptr)
 		{
-			WriteToStream(".tiff", img, ocrImgStream);
+			inRange(img, Scalar(0, 225, 225), Scalar(25, 255, 255), yellow);
+			WriteToStream(".tiff", yellow, yellowStream);
 		}
-	}
 
-	void SceneTextRegionExtractor::Black(array<unsigned char>^ buffer, Stream^ ocrImgStream)
-	{
-		pin_ptr<unsigned char> px = &buffer[0];
-		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
-
-		inRange(img, Scalar(0, 0, 0), Scalar(25, 25, 25), img);
-
-		if (ocrImgStream != nullptr)
+		if (blackStream != nullptr)
 		{
-			WriteToStream(".tiff", img, ocrImgStream);
+			inRange(img, Scalar(0, 0, 0), Scalar(25, 25, 25), black);
+			WriteToStream(".tiff", black, blackStream);
+		}
+
+		if (whiteStream != nullptr)
+		{
+			inRange(img, Scalar(225, 225, 225), Scalar(255, 255, 255), white);
+			WriteToStream(".tiff", white, whiteStream);
 		}
 	}
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
 		pin_ptr<unsigned char> px = &buffer[0];
-		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		cv::Mat large = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		Mat large = imdecode(datax, CV_LOAD_IMAGE_COLOR);
 
 		if (ocrImgStream != nullptr)
 		{
