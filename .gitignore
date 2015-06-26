@@ -194,7 +194,3 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
-
-# Exceptions
-!ImageQuality.OpenCV/OpenCV/*
-!ImageQuality.OpenCV/OpenCV/x64/vc12/*
