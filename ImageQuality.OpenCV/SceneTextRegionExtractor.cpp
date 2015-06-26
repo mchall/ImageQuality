@@ -40,18 +40,37 @@ namespace ImageQuality
 		Mat output;
 		inRange(img, lower, upper, output);
 
-		vector<Point> points;
-		findNonZero(output, points);
-		if (points.empty())
+		Mat connected;
+		pyrDown(output, connected);
+		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(9, 1));
+		morphologyEx(connected, connected, MORPH_CLOSE, morphKernel);
+
+		vector<vector<Point>> contours;
+		vector<Vec4i> hierarchy;
+		findContours(connected, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+		if (hierarchy.empty())
 			return output;
 
-		RotatedRect box = minAreaRect(points);
-		if (box.angle < -45)
-			box.angle += 90;
+		float biggest = 0, angle;
+		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+		{
+			RotatedRect box = minAreaRect(contours[idx]);
+			
+			float area = box.size.area();
+			if (area > biggest)
+			{
+				biggest = area;
+				angle = box.angle;
+			}
+		}
+
+		if (angle < -45)
+			angle += 90;
 
 		int len = max(output.cols, output.rows);
 		Point2f pt(len / 2., len / 2.);
-		Mat r = getRotationMatrix2D(pt, box.angle, 1);
+		Mat r = getRotationMatrix2D(pt, angle, 1);
 		warpAffine(output, output, r, Size(len, len));
 
 		return output;
