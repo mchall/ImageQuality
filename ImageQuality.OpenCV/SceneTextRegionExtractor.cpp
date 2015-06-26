@@ -10,30 +10,51 @@ namespace ImageQuality
 	{
 		Mat img = ReadImage(buffer);
 
-		Mat red, yellow, black, white;
 		if (redStream != nullptr)
 		{
-			inRange(img, Scalar(0, 0, 200), Scalar(50, 50, 255), red);
+			Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
 			WriteToStream(".tiff", red, redStream);
 		}
 
 		if (yellowStream != nullptr)
 		{
-			inRange(img, Scalar(0, 225, 225), Scalar(50, 255, 255), yellow);
+			Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
 			WriteToStream(".tiff", yellow, yellowStream);
 		}
 
 		if (blackStream != nullptr)
 		{
-			inRange(img, Scalar(0, 0, 0), Scalar(25, 25, 25), black);
+			Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
 			WriteToStream(".tiff", black, blackStream);
 		}
 
 		if (whiteStream != nullptr)
 		{
-			inRange(img, Scalar(225, 225, 225), Scalar(255, 255, 255), white);
+			Mat white = DetectAndRotate(img, Scalar(225, 225, 225), Scalar(255, 255, 255));
 			WriteToStream(".tiff", white, whiteStream);
 		}
+	}
+
+	Mat SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
+	{
+		Mat output;
+		inRange(img, lower, upper, output);
+
+		vector<Point> points;
+		findNonZero(output, points);
+		if (points.empty())
+			return output;
+
+		RotatedRect box = minAreaRect(points);
+		if (box.angle < -45)
+			box.angle += 90;
+
+		int len = max(output.cols, output.rows);
+		Point2f pt(len / 2., len / 2.);
+		Mat r = getRotationMatrix2D(pt, box.angle, 1);
+		warpAffine(output, output, r, Size(len, len));
+
+		return output;
 	}
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)

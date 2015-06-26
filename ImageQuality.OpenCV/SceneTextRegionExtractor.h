@@ -17,6 +17,7 @@ namespace ImageQuality {
 		void SimpleWatermark(array<unsigned char>^ buffer, Stream^ redStream, Stream^ yellowStream, Stream^ blackStream, Stream^ whiteStream);
 
 	private:
+		Mat DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		void WriteToStream(const std::string& extension, Mat image, Stream^ outStream);
 		Mat ReadImage(array<unsigned char>^ buffer);
 	};
