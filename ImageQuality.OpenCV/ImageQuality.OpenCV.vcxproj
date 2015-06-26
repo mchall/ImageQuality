@@ -58,7 +58,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)OpenCV\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OpenCV\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -66,11 +66,11 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_ts300d.lib;opencv_world300d.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)OpenCV\x64\vc12\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OpenCV\opencv\build\$(PlatformShortName)\vc12\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>echo Deploying OpenCV DLLs (Debug)...
-robocopy "$(ProjectDir)OpenCV\$(PlatformShortName)\vc12\bin" "$(SolutionDir)Debug\$(PlatformShortName)" /NJH /NDL /NP opencv_world300d.dll
+robocopy "C:\OpenCV\opencv\build\$(PlatformShortName)\vc12\bin" "$(SolutionDir)Debug\$(PlatformShortName)" /NJH /NDL /NP opencv_world300d.dll
 if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     </CustomBuildStep>
     <CustomBuildStep>
@@ -83,7 +83,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>$(ProjectDir)OpenCV\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OpenCV\opencv\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -91,12 +91,12 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opencv_ts300.lib;opencv_world300.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)OpenCV\x64\vc11\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\OpenCV\opencv\build\$(PlatformShortName)\vc12\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Message>Deploying OpenCV DLLs</Message>
       <Command>echo Deploying OpenCV DLLs...
-robocopy "$(ProjectDir)OpenCV\$(PlatformShortName)\vc12\bin" "$(SolutionDir)Release\$(PlatformShortName)" /NJH /NDL /NP opencv_world300.dll
+robocopy "C:\OpenCV\opencv\build\$(PlatformShortName)\vc12\bin" "$(SolutionDir)Release\$(PlatformShortName)" /NJH /NDL /NP opencv_world300.dll
 if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
       <Outputs>opencv_world300.dll</Outputs>
     </CustomBuildStep>
