@@ -18,5 +18,6 @@ namespace ImageQuality {
 
 	private:
 		void WriteToStream(const std::string& extension, Mat image, Stream^ outStream);
+		Mat ReadImage(array<unsigned char>^ buffer);
 	};
 }

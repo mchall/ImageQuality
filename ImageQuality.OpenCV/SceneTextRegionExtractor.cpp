@@ -8,9 +8,7 @@ namespace ImageQuality
 {
 	void SceneTextRegionExtractor::SimpleWatermark(array<unsigned char>^ buffer, Stream^ redStream, Stream^ yellowStream, Stream^ blackStream, Stream^ whiteStream)
 	{
-		pin_ptr<unsigned char> px = &buffer[0];
-		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		Mat img = ReadImage(buffer);
 
 		Mat red, yellow, black, white;
 		if (redStream != nullptr)
@@ -21,7 +19,7 @@ namespace ImageQuality
 
 		if (yellowStream != nullptr)
 		{
-			inRange(img, Scalar(0, 225, 225), Scalar(25, 255, 255), yellow);
+			inRange(img, Scalar(0, 225, 225), Scalar(50, 255, 255), yellow);
 			WriteToStream(".tiff", yellow, yellowStream);
 		}
 
@@ -40,20 +38,18 @@ namespace ImageQuality
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
-		pin_ptr<unsigned char> px = &buffer[0];
-		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		Mat large = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		Mat image = ReadImage(buffer);
 
 		if (ocrImgStream != nullptr)
 		{
 			Mat tiff;
-			cvtColor(large, tiff, CV_BGR2GRAY);
+			cvtColor(image, tiff, CV_BGR2GRAY);
 			threshold(tiff, tiff, 0, 255, THRESH_BINARY | THRESH_OTSU);
 			WriteToStream(".tiff", tiff, ocrImgStream);
 		}
 
 		Mat rgb;
-		pyrDown(large, rgb);
+		pyrDown(image, rgb);
 		Mat small;
 		cvtColor(rgb, small, CV_BGR2GRAY);
 
@@ -98,6 +94,13 @@ namespace ImageQuality
 		}
 
 		return list;
+	}
+
+	Mat SceneTextRegionExtractor::ReadImage(array<unsigned char>^ buffer)
+	{
+		pin_ptr<unsigned char> px = &buffer[0];
+		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
 	}
 
 	void SceneTextRegionExtractor::WriteToStream(const std::string& extension, Mat image, Stream^ stream)
