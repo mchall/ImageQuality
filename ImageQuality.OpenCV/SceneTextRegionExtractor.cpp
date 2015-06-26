@@ -58,7 +58,7 @@ namespace ImageQuality
 			RotatedRect box = minAreaRect(contours[idx]);
 			
 			float area = box.size.area();
-			if (area > biggest)
+			if (area > biggest && box.size.width > 8 && box.size.height > 8)
 			{
 				biggest = area;
 				angle = box.angle;

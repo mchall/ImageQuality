@@ -20,7 +20,7 @@
         <Image x:Name="Image" Grid.Row="1" Margin="5" />
         
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5">
-            <TextBlock x:Name="ResultText" FontSize="12" Margin="5" HorizontalAlignment="Right" />
+            <TextBlock x:Name="ResultText" FontSize="12" Margin="5" />
         </StackPanel>
     </Grid>
 </Window>
