@@ -6,6 +6,48 @@ using namespace cv;
 
 namespace ImageQuality
 {
+	void SceneTextRegionExtractor::Red(array<unsigned char>^ buffer, Stream^ ocrImgStream)
+	{
+		pin_ptr<unsigned char> px = &buffer[0];
+		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+
+		inRange(img, Scalar(0, 0, 200), Scalar(50, 50, 255), img);
+
+		if (ocrImgStream != nullptr)
+		{
+			WriteToStream(".tiff", img, ocrImgStream);
+		}
+	}
+
+	void SceneTextRegionExtractor::White(array<unsigned char>^ buffer, Stream^ ocrImgStream)
+	{
+		pin_ptr<unsigned char> px = &buffer[0];
+		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+
+		inRange(img, Scalar(225, 225, 225), Scalar(255, 255, 255), img);
+
+		if (ocrImgStream != nullptr)
+		{
+			WriteToStream(".tiff", img, ocrImgStream);
+		}
+	}
+
+	void SceneTextRegionExtractor::Black(array<unsigned char>^ buffer, Stream^ ocrImgStream)
+	{
+		pin_ptr<unsigned char> px = &buffer[0];
+		cv::Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
+		cv::Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+
+		inRange(img, Scalar(0, 0, 0), Scalar(25, 25, 25), img);
+
+		if (ocrImgStream != nullptr)
+		{
+			WriteToStream(".tiff", img, ocrImgStream);
+		}
+	}
+
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
 		pin_ptr<unsigned char> px = &buffer[0];

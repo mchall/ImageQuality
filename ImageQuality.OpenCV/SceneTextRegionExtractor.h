@@ -14,6 +14,9 @@ namespace ImageQuality {
 	{
 	public:
 		IList<Region^>^ GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream);
+		void Red(array<unsigned char>^ buffer, Stream^ ocrImgStream);
+		void White(array<unsigned char>^ buffer, Stream^ ocrImgStream);
+		void Black(array<unsigned char>^ buffer, Stream^ ocrImgStream);
 
 	private:
 		void WriteToStream(const std::string& extension, Mat image, Stream^ outStream);

@@ -30,5 +30,11 @@ namespace ImageQualityClient
             SceneTextWindow window = new SceneTextWindow();
             window.ShowDialog();
         }
+
+        private void SimleWatermark_Click(object sender, RoutedEventArgs e)
+        {
+            SimpleWatermarkWindow window = new SimpleWatermarkWindow();
+            window.ShowDialog();
+        }
     }
 }

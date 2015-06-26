@@ -13,16 +13,16 @@ using Microsoft.Win32;
 namespace ImageQualityClient
 {
     /// <summary>
-    /// Interaction logic for SceneTextWindow.xaml
+    /// Interaction logic for SimpleWatermarkWindow.xaml
     /// </summary>
-    public partial class SceneTextWindow : Window
+    public partial class SimpleWatermarkWindow : Window
     {
-        private SceneText _sceneText;
+        private SimpleWatermarkDetect _watermarkDetect;
 
-        public SceneTextWindow()
+        public SimpleWatermarkWindow()
         {
             InitializeComponent();
-            _sceneText = new SceneText();
+            _watermarkDetect = new SimpleWatermarkDetect();
         }
 
         private void DetectText_Click(object sender, RoutedEventArgs e)
@@ -35,13 +35,12 @@ namespace ImageQualityClient
 
                 var sw = Stopwatch.StartNew();
 
-                byte[] regionImg;
-                ResultText.Text = _sceneText.DetectRegions(fileBytes, out regionImg).Trim();
+                ResultText.Text = _watermarkDetect.Detect(fileBytes).Trim();
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);
 
-                MemoryStream ms = new MemoryStream(regionImg);
+                MemoryStream ms = new MemoryStream(fileBytes);
                 var imageSource = new BitmapImage();
                 imageSource.BeginInit();
                 imageSource.StreamSource = ms;

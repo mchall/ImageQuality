@@ -40,7 +40,14 @@ namespace ImageQuality
                 {
                     using (var page = _ocr.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
                     {
-                        sb.AppendLine(page.GetText().Trim());
+                        if (page.GetMeanConfidence() > 0.5)
+                        {
+                            var text = page.GetText().Trim();
+                            if (!String.IsNullOrEmpty(text))
+                            {
+                                sb.AppendLine(text);
+                            }
+                        }
                     }
                 }
             }

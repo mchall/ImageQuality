@@ -6,6 +6,7 @@
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
             <Button Height="30" Margin="5" Width="250" Content="BRISQUE Demo" Click="Brisque_Click" FontSize="18" />
             <Button Height="30" Margin="5" Width="250" Content="Scene Text Demo" Click="SceneText_Click" FontSize="18" />
+            <Button Height="30" Margin="5" Width="250" Content="Simple Watermark Demo" Click="SimleWatermark_Click" FontSize="18" />
         </StackPanel>
     </Grid>
 </Window>

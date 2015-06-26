@@ -54,6 +54,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="SimpleWatermarkWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SceneTextWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,6 +73,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SimpleWatermarkWindow.xaml.cs">
+      <DependentUpon>SimpleWatermarkWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SceneTextWindow.xaml.cs">
       <DependentUpon>SceneTextWindow.xaml</DependentUpon>
