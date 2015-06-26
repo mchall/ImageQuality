@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Tesseract;
-using System.Linq;
 
 namespace ImageQuality
 {
     public class SceneText
     {
         private SceneTextRegionExtractor _extractor;
-        private TesseractEngine _ocr;
 
         public SceneText()
         {
             _extractor = new SceneTextRegionExtractor();
-            _ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
         }
 
         public string DetectRegions(byte[] fileBytes)
@@ -38,9 +35,9 @@ namespace ImageQuality
 
                 foreach (var region in OrderRegions(regions))
                 {
-                    using (var page = _ocr.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
+                    using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
                     {
-                        if (page.GetMeanConfidence() > 0.5)
+                        if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                         {
                             var text = page.GetText().Trim();
                             if (!String.IsNullOrEmpty(text))

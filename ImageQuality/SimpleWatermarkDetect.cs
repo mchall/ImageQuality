@@ -8,12 +8,10 @@ namespace ImageQuality
     public class SimpleWatermarkDetect
     {
         private SceneTextRegionExtractor _extractor;
-        private TesseractEngine _ocr;
 
         public SimpleWatermarkDetect()
         {
             _extractor = new SceneTextRegionExtractor();
-            _ocr = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
         }
 
         public string Detect(byte[] fileBytes)
@@ -39,9 +37,9 @@ namespace ImageQuality
         {
             var pix = Pix.LoadTiffFromMemory(ocrImg);
 
-            using (var page = _ocr.Process(pix))
+            using (var page = OcrEngine.Instance.Process(pix))
             {
-                if (page.GetMeanConfidence() > 0.5)
+                if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                 {
                     var text = page.GetText().Trim();
                     if (!String.IsNullOrEmpty(text))
