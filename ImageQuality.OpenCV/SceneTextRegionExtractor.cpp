@@ -42,7 +42,7 @@ namespace ImageQuality
 
 		Mat connected;
 		pyrDown(output, connected);
-		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(9, 1));
+		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1)); 
 		morphologyEx(connected, connected, MORPH_CLOSE, morphKernel);
 
 		vector<vector<Point>> contours;
@@ -101,7 +101,7 @@ namespace ImageQuality
 		threshold(grad, bw, 0, 255, THRESH_BINARY | THRESH_OTSU);
 
 		Mat connected;
-		morphKernel = getStructuringElement(MORPH_RECT, Size(9, 1));
+		morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
 		morphologyEx(bw, connected, MORPH_CLOSE, morphKernel);
 
 		Mat mask = Mat::zeros(bw.size(), CV_8UC1);
