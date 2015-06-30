@@ -30,7 +30,7 @@ namespace ImageQuality
 
 		if (whiteStream != nullptr)
 		{
-			Mat white = DetectAndRotate(img, Scalar(225, 225, 225), Scalar(255, 255, 255));
+			Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
 			WriteToStream(".tiff", white, whiteStream);
 		}
 	}
