@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using SVM;
+using System.Linq;
 
 namespace ImageQuality
 {
@@ -80,7 +81,7 @@ namespace ImageQuality
 
         public void ResumeTraining(List<string> trainingData)
         {
-            _trainingData = trainingData;
+            _trainingData = trainingData.Where(t => !String.IsNullOrEmpty(t)).ToList();
         }
 
         public string CreateModel(List<string> trainingData)
