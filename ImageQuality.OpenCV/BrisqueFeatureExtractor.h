@@ -15,7 +15,7 @@ namespace ImageQuality {
 public ref class BrisqueFeatureExtractor
 {
 public:
-	IList<double>^ BrisqueFeatures(array<unsigned char>^ buffer);
+	IList<double>^ BrisqueFeatures(array<uchar>^ buffer);
 
 private:
 	vector<double> brisquefeatures(Mat image);

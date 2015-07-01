@@ -1,36 +1,38 @@
 #include "Stdafx.h"
 #include "SceneTextRegionExtractor.h"
 
+#include "opencv2/objdetect/objdetect.hpp"
+
 using namespace std;
 using namespace cv;
 
 namespace ImageQuality
 {
-	IList<MemoryStream^>^ SceneTextRegionExtractor::SimpleWatermark(array<unsigned char>^ buffer)
+	IList<array<uchar>^>^ SceneTextRegionExtractor::SimpleWatermark(array<uchar>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
 
-		List<MemoryStream^>^ streams = gcnew List<MemoryStream^>(4);
+		List<array<uchar>^>^ streams = gcnew List<array<uchar>^>(4);
 
 		Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
 		MemoryStream^ redStream = gcnew MemoryStream();
 		WriteToStream(".tiff", red, redStream);
-		streams->Add(redStream);
+		streams->Add(redStream->ToArray());
 
 		Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
 		MemoryStream^ yellowStream = gcnew MemoryStream();
 		WriteToStream(".tiff", yellow, yellowStream);
-		streams->Add(yellowStream);
+		streams->Add(yellowStream->ToArray());
 
 		Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
 		MemoryStream^ blackStream = gcnew MemoryStream();
 		WriteToStream(".tiff", black, blackStream);
-		streams->Add(blackStream);
+		streams->Add(blackStream->ToArray());
 
 		Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
 		MemoryStream^ whiteStream = gcnew MemoryStream();
 		WriteToStream(".tiff", white, whiteStream);
-		streams->Add(whiteStream);
+		streams->Add(whiteStream->ToArray());
 
 		return streams;
 	}
@@ -76,7 +78,7 @@ namespace ImageQuality
 		return output;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
+	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<uchar>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
 		Mat image = ReadImage(buffer);
 
@@ -136,9 +138,9 @@ namespace ImageQuality
 		return list;
 	}
 
-	Mat SceneTextRegionExtractor::ReadImage(array<unsigned char>^ buffer)
+	Mat SceneTextRegionExtractor::ReadImage(array<uchar>^ buffer)
 	{
-		pin_ptr<unsigned char> px = &buffer[0];
+		pin_ptr<uchar> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
 		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
 	}

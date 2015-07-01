@@ -6,9 +6,9 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<unsigned char>^ buffer)
+	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<uchar>^ buffer)
 	{
-		pin_ptr<unsigned char> p = &buffer[0];
+		pin_ptr<uchar> p = &buffer[0];
 		Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);
 		Mat image = imdecode(data, CV_LOAD_IMAGE_GRAYSCALE);
 
@@ -18,7 +18,7 @@ namespace ImageQuality
 		vector<double> feat = brisquefeatures(image);
 
 		List<double>^ list = gcnew List<double>(5);
-		for (unsigned int i = 0; i < feat.size(); i++)
+		for (uint i = 0; i < feat.size(); i++)
 		{
 			list->Add(feat[i]);
 		}
@@ -65,7 +65,7 @@ namespace ImageQuality
 		vector<double> gam;
 		vector<double> r_gam;
 		vector<double> rho_r_gam;
-		unsigned int number = int((10 - 0.2f) / 0.001f) + 1;
+		uint number = int((10 - 0.2f) / 0.001f) + 1;
 		gam.clear();
 		r_gam.clear();
 		rho_r_gam.clear();
@@ -73,7 +73,7 @@ namespace ImageQuality
 		r_gam.resize(number);
 		rho_r_gam.resize(number);
 
-		for (unsigned i = 0; i < number; i++)
+		for (uint i = 0; i < number; i++)
 		{
 			if (0 == i)
 			{
@@ -98,10 +98,10 @@ namespace ImageQuality
 		vector<double> right;
 		left.clear();
 		right.clear();
-		for (unsigned int i = 0; i < vec.rows; i++)
+		for (uint i = 0; i < vec.rows; i++)
 		{
 			double *data1 = vec.ptr<double>(i);
-			for (unsigned int j = 0; j < vec.cols; j++)
+			for (uint j = 0; j < vec.cols; j++)
 			{
 				if (data1[j] < 0)
 				{
@@ -113,21 +113,21 @@ namespace ImageQuality
 				}
 			}
 		}
-		for (unsigned int i = 0; i < left.size(); i++)
+		for (uint i = 0; i < left.size(); i++)
 		{
 			left[i] = left[i] * left[i];
 		}
-		for (unsigned int i = 0; i < right.size(); i++)
+		for (uint i = 0; i < right.size(); i++)
 		{
 			right[i] = right[i] * right[i];
 		}
 		double leftsum = 0.f;
-		for (unsigned int i = 0; i < left.size(); i++)
+		for (uint i = 0; i < left.size(); i++)
 		{
 			leftsum += left[i];
 		}
 		double rightsum = 0.f;
-		for (unsigned int i = 0; i < right.size(); i++)
+		for (uint i = 0; i < right.size(); i++)
 		{
 			rightsum += right[i];
 		}
@@ -146,12 +146,12 @@ namespace ImageQuality
 		vector<double> gam;
 		vector<double> r_gam;
 		vector<double> r_gam_rha;
-		unsigned int number = int((10 - 0.2f) / 0.001f) + 1;
+		uint number = int((10 - 0.2f) / 0.001f) + 1;
 		gam.resize(number);
 		r_gam.resize(number);
 		r_gam_rha.resize(number);
 
-		for (unsigned i = 0; i < number; i++)
+		for (uint i = 0; i < number; i++)
 		{
 			if (0 == i)
 			{
@@ -193,12 +193,12 @@ namespace ImageQuality
 
 		GaussianBlur(imgdouble, imgdouble, Size(7, 7), 7.f / 6, 7.f / 6, 0);
 
-		for (unsigned int i = 0; i < imgdouble.rows; i++)
+		for (uint i = 0; i < imgdouble.rows; i++)
 		{
 			double *data1 = imgdouble.ptr<double>(i);
 			double *data2 = mu_sq.ptr<double>(i);
 			double *data3 = sigma.ptr<double>(i);
-			for (unsigned int j = 0; j < imgdouble.cols; j++)
+			for (uint j = 0; j < imgdouble.cols; j++)
 			{
 				data3[j] = sqrt(abs(data1[j] - data2[j]));
 			}
@@ -221,7 +221,7 @@ namespace ImageQuality
 		double constvalue, meanparam, leftstd, rightstd;
 		int shifts[][2] = { 0, 1, 1, 0, 1, 1, -1, 1 };
 
-		for (unsigned int itr_shift = 0; itr_shift < 4; itr_shift++)
+		for (uint itr_shift = 0; itr_shift < 4; itr_shift++)
 		{
 			shifted_structdis = circshift(structdis, shifts[itr_shift][0], shifts[itr_shift][1]);
 			pair = structdis.mul(shifted_structdis);
@@ -250,26 +250,26 @@ namespace ImageQuality
 		}
 		else if (1 == a)
 		{//		
-			for (unsigned int i = 0; i < structdis.rows - 1; i++)
+			for (uint i = 0; i < structdis.rows - 1; i++)
 			{
-				for (unsigned int j = 0; j < structdis.cols; j++)
+				for (uint j = 0; j < structdis.cols; j++)
 				{
 					shiftx.at<double>(i + 1, j) = structdis.at<double>(i, j);
 				}
 			}
-			for (unsigned int j = 0; j < structdis.cols; j++)
+			for (uint j = 0; j < structdis.cols; j++)
 				shiftx.at<double>(0, j) = structdis.at<double>(structdis.rows - 1, j);
 		}
 		else if (-1 == a)
 		{
-			for (unsigned int i = 0; i < structdis.rows - 1; i++)
+			for (uint i = 0; i < structdis.rows - 1; i++)
 			{
-				for (unsigned int j = 0; j < structdis.cols; j++)
+				for (uint j = 0; j < structdis.cols; j++)
 				{
 					shiftx.at<double>(i, j) = structdis.at<double>(i + 1, j);
 				}
 			}
-			for (unsigned int j = 0; j < structdis.cols; j++)
+			for (uint j = 0; j < structdis.cols; j++)
 				shiftx.at<double>(structdis.rows - 1, j) = structdis.at<double>(0, j);
 		}
 		Mat shifty = Mat::zeros(shiftx.rows, shiftx.cols, shiftx.type());
@@ -279,14 +279,14 @@ namespace ImageQuality
 		}
 		else if (1 == b)
 		{
-			for (unsigned int i = 0; i < shiftx.rows; i++)
+			for (uint i = 0; i < shiftx.rows; i++)
 			{
-				for (unsigned int j = 0; j < shiftx.cols - 1; j++)
+				for (uint j = 0; j < shiftx.cols - 1; j++)
 				{
 					shifty.at<double>(i, j + 1) = shiftx.at<double>(i, j);
 				}
 			}
-			for (unsigned int i = 0; i < shiftx.rows; i++)
+			for (uint i = 0; i < shiftx.rows; i++)
 				shifty.at<double>(i, 0) = shiftx.at<double>(i, shiftx.cols - 1);
 		}
 

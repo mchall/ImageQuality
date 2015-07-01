@@ -18,10 +18,9 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            foreach (var stream in _extractor.SimpleWatermark(fileBytes))
+            foreach (var bytes in _extractor.SimpleWatermark(fileBytes))
             {
-                OcrImage(sb, stream.ToArray());
-                stream.Dispose();
+                OcrImage(sb, bytes);
             }
 
             return sb.ToString();

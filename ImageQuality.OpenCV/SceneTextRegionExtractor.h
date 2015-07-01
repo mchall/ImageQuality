@@ -13,12 +13,12 @@ namespace ImageQuality {
 	public ref class SceneTextRegionExtractor
 	{
 	public:
-		IList<Region^>^ GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream);
-		IList<MemoryStream^>^ SimpleWatermark(array<unsigned char>^ buffer);
+		IList<Region^>^ GetRegions(array<uchar>^ buffer, Stream^ ocrImgStream, Stream^ regionStream);
+		IList<array<uchar>^>^ SimpleWatermark(array<uchar>^ buffer);
 
 	private:
 		Mat DetectAndRotate(Mat img, Scalar lower, Scalar upper);
-		void WriteToStream(const std::string& extension, Mat image, Stream^ outStream);
-		Mat ReadImage(array<unsigned char>^ buffer);
+		void WriteToStream(const string& extension, Mat image, Stream^ outStream);
+		Mat ReadImage(array<uchar>^ buffer);
 	};
 }
