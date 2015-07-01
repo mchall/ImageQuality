@@ -29,14 +29,22 @@
             <TextBlock x:Name="CustomScoreText" FontSize="45" Margin="5" HorizontalAlignment="Right" />
         </StackPanel>
 
-        <StackPanel x:Name="TrainingPanel" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5" Visibility="Collapsed">
+        <StackPanel x:Name="TrainingPanel" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5" >
             <RadioButton x:Name="rbAwful" Content="Awful" Margin="5" FontSize="18" />
             <RadioButton x:Name="rbPoor" Content="Poor" Margin="5" FontSize="18" />
             <RadioButton x:Name="rbOkay" Content="Okay" Margin="5" FontSize="18" IsChecked="True" />
             <RadioButton x:Name="rbGood" Content="Good" Margin="5" FontSize="18" />
             <RadioButton x:Name="rbPerfect" Content="Perfect" Margin="5" FontSize="18" />
             <Button Height="30" Margin="5" Width="200" Content="Train" Click="Train_Click" FontSize="18" />
-            <Button Height="30" Margin="5" Width="200" Content="Skip" Click="Skip_Click" FontSize="18" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Height="30" Margin="5" Width="140" Content="Skip" Click="Skip_Click" FontSize="18" />
+                <Button Height="30" Margin="5" Width="140" Content="Undo" Click="Undo_Click" FontSize="18" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Height="30" Margin="5" Width="140" Content="Save Training" Click="SaveTraining_Click" FontSize="18" />
+                <Button Height="30" Margin="5" Width="140" Content="Load Training" Click="LoadTraining_Click" FontSize="18" />
+            </StackPanel>
             <Button Height="30" Margin="5" Width="200" Content="Generate Model" Click="GenerateModel_Click" FontSize="18" />
         </StackPanel>
     </Grid>

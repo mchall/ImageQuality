@@ -48,7 +48,7 @@ namespace ImageQuality
 
         public double Score(IList<double> features)
         {
-            var problem = new Problem(1, new double[1] { 1 }, ToNode(features), features.Count); //36?
+            var problem = new Problem(1, new double[1] { 1 }, ToNode(features), features.Count);
             var scaled = Transform.Scale(problem);
 
             return _model.Predict(scaled.X[0]);
@@ -65,6 +65,12 @@ namespace ImageQuality
             var features = Features(fileBytes);
             var t = GetTrainingData(features, dmos);
             _trainingData.Add(t);
+        }
+
+        public void Undo()
+        {
+            if (_trainingData.Count > 0)
+                _trainingData.RemoveAt(_trainingData.Count - 1);
         }
 
         public List<string> SaveTraining()

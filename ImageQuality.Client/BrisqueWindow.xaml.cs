@@ -84,16 +84,20 @@ namespace ImageQualityClient
             Image.Source = new BitmapImage(new Uri(_trainingFiles[_trainingIndex]));
         }
 
+        private void Undo_Click(object sender, RoutedEventArgs e)
+        {
+            _trainingIndex--;
+            if (_trainingIndex < _trainingFiles.Count)
+            {
+                _trainingIndex = 0;
+            }
+            Image.Source = new BitmapImage(new Uri(_trainingFiles[_trainingIndex]));
+        }
+
         private void Train_Click(object sender, RoutedEventArgs e)
         {
             var fileBytes = File.ReadAllBytes(_trainingFiles[_trainingIndex]);
             _defaultBrisque.Train(fileBytes, DmosScore());
-
-            //Optional: save training to continue later
-            //var t = _defaultBrisque.SaveTraining();
-
-            //Optional: resume training with saved data
-            //_defaultBrisque.ResumeTraining(t);
 
             _trainingIndex++;
             if (_trainingIndex >= _trainingFiles.Count)
@@ -102,6 +106,21 @@ namespace ImageQualityClient
                 return;
             }
             Image.Source = new BitmapImage(new Uri(_trainingFiles[_trainingIndex]));
+        }
+
+        private void SaveTraining_Click(object sender, RoutedEventArgs e)
+        {
+            var training = _defaultBrisque.SaveTraining();
+            File.WriteAllLines("training.txt", training);
+        }
+
+        private void LoadTraining_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists("training.txt"))
+            {
+                var training = File.ReadAllLines("training.txt");
+                _defaultBrisque.ResumeTraining(training.ToList());
+            }
         }
 
         private float DmosScore()
