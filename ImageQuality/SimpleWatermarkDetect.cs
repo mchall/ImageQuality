@@ -21,6 +21,7 @@ namespace ImageQuality
             foreach (var stream in _extractor.SimpleWatermark(fileBytes))
             {
                 OcrImage(sb, stream.ToArray());
+                stream.Dispose();
             }
 
             return sb.ToString();

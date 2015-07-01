@@ -36,6 +36,7 @@
             <RadioButton x:Name="rbGood" Content="Good" Margin="5" FontSize="18" />
             <RadioButton x:Name="rbPerfect" Content="Perfect" Margin="5" FontSize="18" />
             <Button Height="30" Margin="5" Width="200" Content="Train" Click="Train_Click" FontSize="18" />
+            <Button Height="30" Margin="5" Width="200" Content="Skip" Click="Skip_Click" FontSize="18" />
             <Button Height="30" Margin="5" Width="200" Content="Generate Model" Click="GenerateModel_Click" FontSize="18" />
         </StackPanel>
     </Grid>

@@ -70,7 +70,18 @@ namespace ImageQualityClient
         private void GenerateModel_Click(object sender, RoutedEventArgs e)
         {
             var newModel = _defaultBrisque.CreateModel();
-            //Save model to file and load for scoring
+            File.WriteAllText("generated_model", newModel);
+        }
+
+        private void Skip_Click(object sender, RoutedEventArgs e)
+        {
+            _trainingIndex++;
+            if (_trainingIndex >= _trainingFiles.Count)
+            {
+                MessageBox.Show("No more files in folder", "Training");
+                return;
+            }
+            Image.Source = new BitmapImage(new Uri(_trainingFiles[_trainingIndex]));
         }
 
         private void Train_Click(object sender, RoutedEventArgs e)
