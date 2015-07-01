@@ -1,0 +1,26 @@
+﻿<Window x:Class="ImageQualityClient.BlurWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ImageQuality.Client" Width="800" Height="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60*" />
+            <ColumnDefinition Width="40*" />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+            <Button Height="30" Margin="5" Width="200" Content="Blur Measure" Click="DetectBlur_Click" FontSize="18" />
+            <TextBlock x:Name="TimeText" FontSize="16" Margin="5" VerticalAlignment="Center" />
+        </StackPanel>
+        
+        <Image x:Name="Image" Grid.Row="1" Margin="5" />
+        
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="5">
+            <TextBlock x:Name="ResultText" FontSize="12" Margin="5" />
+        </StackPanel>
+    </Grid>
+</Window>

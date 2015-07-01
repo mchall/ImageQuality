@@ -36,5 +36,11 @@ namespace ImageQualityClient
             SimpleWatermarkWindow window = new SimpleWatermarkWindow();
             window.ShowDialog();
         }
+
+        private void Blur_Click(object sender, RoutedEventArgs e)
+        {
+            BlurWindow window = new BlurWindow();
+            window.ShowDialog();
+        }
     }
 }

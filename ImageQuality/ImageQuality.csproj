@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OcrEngine.cs" />
+    <Compile Include="BlurMeasure.cs" />
     <Compile Include="SimpleWatermarkDetect.cs" />
     <Compile Include="SceneText.cs" />
     <Compile Include="Brisque.cs" />

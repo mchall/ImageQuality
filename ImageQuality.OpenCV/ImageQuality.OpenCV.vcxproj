@@ -106,6 +106,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlurMeasure.h" />
     <ClInclude Include="BrisqueFeatureExtractor.h" />
     <ClInclude Include="Region.h" />
     <ClInclude Include="SceneTextRegionExtractor.h" />
@@ -113,6 +114,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BlurMeasure.cpp" />
     <ClCompile Include="BrisqueFeatureExtractor.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SceneTextRegionExtractor.cpp" />

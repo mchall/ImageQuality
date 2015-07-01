@@ -23,6 +23,9 @@
     <ClInclude Include="Region.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BlurMeasure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -38,6 +41,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Region.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BlurMeasure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
