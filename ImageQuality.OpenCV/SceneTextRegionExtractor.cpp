@@ -6,33 +6,33 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	void SceneTextRegionExtractor::SimpleWatermark(array<unsigned char>^ buffer, Stream^ redStream, Stream^ yellowStream, Stream^ blackStream, Stream^ whiteStream)
+	IList<MemoryStream^>^ SceneTextRegionExtractor::SimpleWatermark(array<unsigned char>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
 
-		if (redStream != nullptr)
-		{
-			Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
-			WriteToStream(".tiff", red, redStream);
-		}
+		List<MemoryStream^>^ streams = gcnew List<MemoryStream^>(4);
 
-		if (yellowStream != nullptr)
-		{
-			Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
-			WriteToStream(".tiff", yellow, yellowStream);
-		}
+		Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
+		MemoryStream^ redStream = gcnew MemoryStream();
+		WriteToStream(".tiff", red, redStream);
+		streams->Add(redStream);
 
-		if (blackStream != nullptr)
-		{
-			Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
-			WriteToStream(".tiff", black, blackStream);
-		}
+		Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
+		MemoryStream^ yellowStream = gcnew MemoryStream();
+		WriteToStream(".tiff", yellow, yellowStream);
+		streams->Add(yellowStream);
 
-		if (whiteStream != nullptr)
-		{
-			Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
-			WriteToStream(".tiff", white, whiteStream);
-		}
+		Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
+		MemoryStream^ blackStream = gcnew MemoryStream();
+		WriteToStream(".tiff", black, blackStream);
+		streams->Add(blackStream);
+
+		Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
+		MemoryStream^ whiteStream = gcnew MemoryStream();
+		WriteToStream(".tiff", white, whiteStream);
+		streams->Add(whiteStream);
+
+		return streams;
 	}
 
 	Mat SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)

@@ -18,16 +18,9 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            using (var red = new MemoryStream())
-            using (var yellow = new MemoryStream())
-            using (var white = new MemoryStream())
-            using (var black = new MemoryStream())
+            foreach (var stream in _extractor.SimpleWatermark(fileBytes))
             {
-                _extractor.SimpleWatermark(fileBytes, red, yellow, black, white);
-                OcrImage(sb, red.ToArray());
-                OcrImage(sb, yellow.ToArray());
-                OcrImage(sb, black.ToArray());
-                OcrImage(sb, white.ToArray());
+                OcrImage(sb, stream.ToArray());
             }
 
             return sb.ToString();

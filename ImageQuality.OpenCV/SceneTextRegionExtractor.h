@@ -14,7 +14,7 @@ namespace ImageQuality {
 	{
 	public:
 		IList<Region^>^ GetRegions(array<unsigned char>^ buffer, Stream^ ocrImgStream, Stream^ regionStream);
-		void SimpleWatermark(array<unsigned char>^ buffer, Stream^ redStream, Stream^ yellowStream, Stream^ blackStream, Stream^ whiteStream);
+		IList<MemoryStream^>^ SimpleWatermark(array<unsigned char>^ buffer);
 
 	private:
 		Mat DetectAndRotate(Mat img, Scalar lower, Scalar upper);
