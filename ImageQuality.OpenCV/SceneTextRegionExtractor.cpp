@@ -1,8 +1,6 @@
 #include "Stdafx.h"
 #include "SceneTextRegionExtractor.h"
 
-#include "opencv2/objdetect/objdetect.hpp"
-
 using namespace std;
 using namespace cv;
 
