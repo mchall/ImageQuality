@@ -86,8 +86,9 @@ namespace ImageQualityClient
 
         private void Undo_Click(object sender, RoutedEventArgs e)
         {
+            _defaultBrisque.Undo();
             _trainingIndex--;
-            if (_trainingIndex < _trainingFiles.Count)
+            if (_trainingIndex < 0)
             {
                 _trainingIndex = 0;
             }
