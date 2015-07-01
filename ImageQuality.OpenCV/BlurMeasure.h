@@ -10,6 +10,10 @@ namespace ImageQuality {
 	public ref class BlurMeasure
 	{
 	public:
-		double Measure(array<unsigned char>^ buffer);
+		double Nayar89(array<unsigned char>^ buffer);
+		double Pech2000(array<unsigned char>^ buffer);
+
+	private:
+		Mat ReadImage(array<unsigned char>^ buffer);
 	};
 }
