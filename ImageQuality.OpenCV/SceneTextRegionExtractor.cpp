@@ -8,11 +8,11 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<array<uchar>^>^ SceneTextRegionExtractor::SimpleWatermark(array<uchar>^ buffer)
+	IList<array<byte>^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
 
-		List<array<uchar>^>^ streams = gcnew List<array<uchar>^>(4);
+		List<array<byte>^>^ streams = gcnew List<array<byte>^>(4);
 
 		Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
 		MemoryStream^ redStream = gcnew MemoryStream();
@@ -78,7 +78,7 @@ namespace ImageQuality
 		return output;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<uchar>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
+	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
 		Mat image = ReadImage(buffer);
 
@@ -138,16 +138,16 @@ namespace ImageQuality
 		return list;
 	}
 
-	Mat SceneTextRegionExtractor::ReadImage(array<uchar>^ buffer)
+	Mat SceneTextRegionExtractor::ReadImage(array<byte>^ buffer)
 	{
-		pin_ptr<uchar> px = &buffer[0];
+		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
 		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
 	}
 
 	void SceneTextRegionExtractor::WriteToStream(const std::string& extension, Mat image, Stream^ stream)
 	{
-		vector<uchar> buffer;
+		vector<byte> buffer;
 		imencode(extension, image, buffer);
 
 		UnmanagedMemoryStream^ sourceStream = gcnew UnmanagedMemoryStream(buffer.data(), buffer.size());

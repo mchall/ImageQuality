@@ -6,9 +6,9 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<uchar>^ buffer)
+	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<byte>^ buffer)
 	{
-		pin_ptr<uchar> p = &buffer[0];
+		pin_ptr<byte> p = &buffer[0];
 		Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);
 		Mat image = imdecode(data, CV_LOAD_IMAGE_GRAYSCALE);
 
