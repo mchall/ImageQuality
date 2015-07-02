@@ -140,14 +140,12 @@ namespace ImageQuality
 		vector<byte> buffer;
 		imencode(extension, image, buffer);
 
-		array<byte>^ copy = gcnew array<byte>(buffer.size());
+		array<byte>^ bytes = gcnew array<byte>(buffer.size());
 
-		pin_ptr<byte> src = &buffer[0];
-		pin_ptr<byte> dest = &copy[0];
+		UnmanagedMemoryStream^ sourceStream = gcnew UnmanagedMemoryStream(buffer.data(), buffer.size());
+		sourceStream->Read(bytes, 0, buffer.size());
 
-		memcpy_s(dest, buffer.size(), src, buffer.size());
-
-		return copy;
+		return bytes;
 	}
 
 	void SceneTextRegionExtractor::WriteToStream(const std::string& extension, Mat image, Stream^ stream)
