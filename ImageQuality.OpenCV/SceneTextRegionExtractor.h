@@ -18,7 +18,8 @@ namespace ImageQuality {
 
 	private:
 		Mat DetectAndRotate(Mat img, Scalar lower, Scalar upper);
-		void WriteToStream(const string& extension, Mat image, Stream^ outStream);
+		array<byte>^ ToByteArray(Mat image, const string& extension);
+		void WriteToStream(const std::string& extension, Mat image, Stream^ stream);
 		Mat ReadImage(array<byte>^ buffer);
 	};
 }

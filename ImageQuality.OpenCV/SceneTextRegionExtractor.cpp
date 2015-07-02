@@ -10,29 +10,21 @@ namespace ImageQuality
 	{
 		Mat img = ReadImage(buffer);
 
-		List<array<byte>^>^ streams = gcnew List<array<byte>^>(4);
+		List<array<byte>^>^ images = gcnew List<array<byte>^>(4);
 
 		Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
-		MemoryStream^ redStream = gcnew MemoryStream();
-		WriteToStream(".tiff", red, redStream);
-		streams->Add(redStream->ToArray());
+		images->Add(ToByteArray(red, ".tiff"));
 
 		Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
-		MemoryStream^ yellowStream = gcnew MemoryStream();
-		WriteToStream(".tiff", yellow, yellowStream);
-		streams->Add(yellowStream->ToArray());
+		images->Add(ToByteArray(yellow, ".tiff"));
 
 		Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
-		MemoryStream^ blackStream = gcnew MemoryStream();
-		WriteToStream(".tiff", black, blackStream);
-		streams->Add(blackStream->ToArray());
+		images->Add(ToByteArray(black, ".tiff"));
 
 		Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
-		MemoryStream^ whiteStream = gcnew MemoryStream();
-		WriteToStream(".tiff", white, whiteStream);
-		streams->Add(whiteStream->ToArray());
+		images->Add(ToByteArray(white, ".tiff"));
 
-		return streams;
+		return images;
 	}
 
 	Mat SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
@@ -42,7 +34,7 @@ namespace ImageQuality
 
 		Mat connected;
 		pyrDown(output, connected);
-		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1)); 
+		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
 		morphologyEx(connected, connected, MORPH_CLOSE, morphKernel);
 
 		vector<vector<Point>> contours;
@@ -56,7 +48,7 @@ namespace ImageQuality
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 		{
 			RotatedRect box = minAreaRect(contours[idx]);
-			
+
 			float area = box.size.area();
 			if (area > biggest && box.size.width > 8 && box.size.height > 8)
 			{
@@ -141,6 +133,21 @@ namespace ImageQuality
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
 		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
+	}
+
+	array<byte>^ SceneTextRegionExtractor::ToByteArray(Mat image, const std::string& extension)
+	{
+		vector<byte> buffer;
+		imencode(extension, image, buffer);
+
+		array<byte>^ copy = gcnew array<byte>(buffer.size());
+
+		pin_ptr<byte> src = &buffer[0];
+		pin_ptr<byte> dest = &copy[0];
+
+		memcpy_s(dest, buffer.size(), src, buffer.size());
+
+		return copy;
 	}
 
 	void SceneTextRegionExtractor::WriteToStream(const std::string& extension, Mat image, Stream^ stream)
