@@ -50,7 +50,7 @@ namespace ImageQuality
 			RotatedRect box = minAreaRect(contours[idx]);
 
 			float area = box.size.area();
-			if (area > biggest && box.size.width > 8 && box.size.height > 8)
+			if (area > biggest && box.size.width > 20 && box.size.height > 12)
 			{
 				biggest = area;
 				angle = box.angle;
@@ -111,7 +111,7 @@ namespace ImageQuality
 			drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
 			double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
 
-			if (r > .45 && rect.height > 8 && rect.width > 8)
+			if (r > .45 && rect.width > 20 && rect.height > 12)
 			{
 				rectangle(rgb, rect, Scalar(0, 255, 0), 2);
 
