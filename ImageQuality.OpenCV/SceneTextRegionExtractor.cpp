@@ -80,17 +80,19 @@ namespace ImageQuality
 			WriteToStream(".tiff", tiff, ocrImgStream);
 		}
 
-		Mat rgb;
-		pyrDown(image, rgb);
-		Mat small;
-		cvtColor(rgb, small, CV_BGR2GRAY);
+		Mat gray;
+		cvtColor(image, gray, CV_BGR2GRAY);
+
+		Mat scaled = gray;
+		pyrDown(scaled, scaled);
+		pyrUp(scaled, scaled);
 
 		Mat grad;
 		Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
-		morphologyEx(small, grad, MORPH_GRADIENT, morphKernel);
+		morphologyEx(scaled, grad, MORPH_GRADIENT, morphKernel);
 
 		Mat bw;
-		threshold(grad, bw, 0, 255, THRESH_BINARY | THRESH_OTSU);
+		threshold(grad, bw, 32, 255, THRESH_BINARY | THRESH_OTSU);
 
 		Mat connected;
 		morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
@@ -101,10 +103,13 @@ namespace ImageQuality
 		vector<Vec4i> hierarchy;
 		findContours(connected, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		List<Region^>^ list = gcnew List<Region^>(5);
+		vector<Rect> regionRects;
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 		{
 			Rect rect = boundingRect(contours[idx]);
+			if (rect.height > 400)
+				continue;
+
 			Mat maskROI(mask, rect);
 			maskROI = Scalar(0, 0, 0);
 
@@ -113,16 +118,22 @@ namespace ImageQuality
 
 			if (r > .45 && rect.width > 20 && rect.height > 12)
 			{
-				rectangle(rgb, rect, Scalar(0, 255, 0), 2);
-
-				Region^ region = gcnew Region(rect.x * 2, rect.y * 2, rect.width * 2, rect.height * 2);
-				list->Add(region);
+				regionRects.push_back(rect);
 			}
+		}
+
+		List<Region^>^ list = gcnew List<Region^>(5);
+		for each (Rect rect in regionRects)
+		{
+			rectangle(image, rect, Scalar(0, 255, 0), 2);
+
+			Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
+			list->Add(region);
 		}
 
 		if (regionStream != nullptr)
 		{
-			WriteToStream(".jpg", rgb, regionStream);
+			WriteToStream(".jpg", image, regionStream);
 		}
 
 		return list;
