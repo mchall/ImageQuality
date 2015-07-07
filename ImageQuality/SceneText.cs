@@ -18,8 +18,31 @@ namespace ImageQuality
 
         public string DetectRegions(byte[] fileBytes)
         {
-            byte[] debug;
-            return DetectRegions(fileBytes, out debug);
+            StringBuilder sb = new StringBuilder();
+
+            using (var ocrImg = new MemoryStream())
+            {
+                var regions = _extractor.GetRegions(fileBytes, ocrImg, null);
+                using (var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray()))
+                {
+                    foreach (var region in OrderRegions(regions))
+                    {
+                        using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
+                        {
+                            if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
+                            {
+                                var text = page.GetText().Trim();
+                                if (!String.IsNullOrEmpty(text))
+                                {
+                                    sb.AppendLine(text);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return sb.ToString();
         }
 
         public string DetectRegions(byte[] fileBytes, out byte[] debugBytes)
@@ -30,19 +53,20 @@ namespace ImageQuality
             using (var debugImg = new MemoryStream())
             {
                 var regions = _extractor.GetRegions(fileBytes, ocrImg, debugImg);
-                var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray());
                 debugBytes = debugImg.ToArray();
-
-                foreach (var region in OrderRegions(regions))
+                using (var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray()))
                 {
-                    using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
+                    foreach (var region in OrderRegions(regions))
                     {
-                        if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
+                        using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
                         {
-                            var text = page.GetText().Trim();
-                            if (!String.IsNullOrEmpty(text))
+                            if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                             {
-                                sb.AppendLine(text);
+                                var text = page.GetText().Trim();
+                                if (!String.IsNullOrEmpty(text))
+                                {
+                                    sb.AppendLine(text);
+                                }
                             }
                         }
                     }

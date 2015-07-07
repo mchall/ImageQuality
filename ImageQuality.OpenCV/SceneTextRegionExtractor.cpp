@@ -149,12 +149,63 @@ namespace ImageQuality
 
 				if (!mergedRects.empty())
 				{
+					Mat edges;
+					Canny(scaled, edges, 128.0, 200.0, 3);
+
+					Mat bin_edges;
+					threshold(edges, bin_edges, 32, 255, THRESH_BINARY | THRESH_OTSU);
+
 					for each (Rect rect in mergedRects)
 					{
-						rectangle(image, rect, Scalar(0, 255, 0), 2);
+						Mat edgesROI(bin_edges, rect);
 
-						Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
-						list->Add(region);
+						vector<vector<Point> > subContours;
+						vector<Vec4i> subHierarchy;
+						findContours(edgesROI, subContours, subHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+						int linkCount = 0;
+
+						for (int i = 0; i < subContours.size(); ++i)
+						{
+							Rect a_r = boundingRect(subContours[i]);
+							double a_x = a_r.x + a_r.width / 2;
+							double a_y = a_r.y + a_r.height / 2;
+
+							for (int j = 0; j < subContours.size(); ++j)
+							{
+								if (j == i){ continue; }
+
+								Rect b_r = boundingRect(subContours[j]);
+								double b_x = b_r.x + b_r.width / 2;
+								double b_y = b_r.y + b_r.height / 2;
+								if (a_r.x < b_r.x + b_r.width && a_r.x + a_r.width > b_r.x &&
+									a_r.y < b_r.y + b_r.width && a_r.y + a_r.width > b_r.y)
+								{
+									continue;
+								}
+
+								double a_min = std::min(a_r.width, a_r.height);
+								double b_min = std::min(b_r.width, b_r.height);
+								if (a_min > 1.5*b_min || b_min > 1.5*a_min){ continue; }
+
+								double d_x = a_x - b_x;
+								double d_y = a_y - b_y;
+								double d = sqrt(d_x*d_x + d_y*d_y);
+
+								if (d < (1.5 * 0.5 * (a_min + b_min)))
+								{
+									linkCount++;
+								}
+							}
+						}
+
+						if (linkCount > 1)
+						{
+							rectangle(image, rect, Scalar(0, 255, 0), 2);
+
+							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
+							list->Add(region);
+						}
 					}
 				}
 			}
