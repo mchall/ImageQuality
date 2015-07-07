@@ -77,6 +77,9 @@ namespace ImageQuality
 			Mat tiff;
 			cvtColor(image, tiff, CV_BGR2GRAY);
 			threshold(tiff, tiff, 0, 255, THRESH_BINARY | THRESH_OTSU);
+
+			//threshold(tiff, tiff, 190, 255, THRESH_BINARY_INV);
+
 			WriteToStream(".tiff", tiff, ocrImgStream);
 		}
 
@@ -125,7 +128,7 @@ namespace ImageQuality
 		Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
 		for each (Rect rect in regionRects)
 		{
-			Rect expanded(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
+			Rect expanded(rect.x - 5, rect.y, rect.width + 10, rect.height);
 			rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
 		}
 
