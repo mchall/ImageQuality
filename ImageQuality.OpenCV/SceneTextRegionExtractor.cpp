@@ -122,8 +122,24 @@ namespace ImageQuality
 			}
 		}
 
-		List<Region^>^ list = gcnew List<Region^>(5);
+		Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
 		for each (Rect rect in regionRects)
+		{
+			Rect expanded(rect.x - 5, rect.y - 5, rect.width + 10, rect.height + 10);
+			rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
+		}
+
+		findContours(rectMask, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+		vector<Rect> mergedRects;
+		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+		{
+			Rect rect = boundingRect(contours[idx]);
+			mergedRects.push_back(rect);
+		}
+
+		List<Region^>^ list = gcnew List<Region^>(5);
+		for each (Rect rect in mergedRects)
 		{
 			rectangle(image, rect, Scalar(0, 255, 0), 2);
 
