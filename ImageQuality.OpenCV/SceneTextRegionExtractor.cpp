@@ -32,14 +32,15 @@ namespace ImageQuality
 		Mat output;
 		inRange(img, lower, upper, output);
 
-		Mat connected;
-		pyrDown(output, connected);
+		Mat scaled;
+		pyrDown(output, scaled);
+
 		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
-		morphologyEx(connected, connected, MORPH_CLOSE, morphKernel);
+		morphologyEx(scaled, scaled, MORPH_CLOSE, morphKernel);
 
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
-		findContours(connected, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(scaled, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 		if (hierarchy.empty())
 			return output;
@@ -70,6 +71,7 @@ namespace ImageQuality
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
 	{
+		List<Region^>^ list = gcnew List<Region^>(5);
 		Mat image = ReadImage(buffer);
 
 		if (ocrImgStream != nullptr)
@@ -78,7 +80,7 @@ namespace ImageQuality
 			cvtColor(image, tiff, CV_BGR2GRAY);
 			threshold(tiff, tiff, 0, 255, THRESH_BINARY | THRESH_OTSU);
 
-			//threshold(tiff, tiff, 190, 255, THRESH_BINARY_INV);
+			//threshold(tiff, tiff, 190, 255, THRESH_BINARY_INV); //todo
 
 			WriteToStream(".tiff", tiff, ocrImgStream);
 		}
@@ -106,48 +108,56 @@ namespace ImageQuality
 		vector<Vec4i> hierarchy;
 		findContours(connected, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		vector<Rect> regionRects;
-		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+		if (!hierarchy.empty())
 		{
-			Rect rect = boundingRect(contours[idx]);
-			if (rect.height > 400)
-				continue;
-
-			Mat maskROI(mask, rect);
-			maskROI = Scalar(0, 0, 0);
-
-			drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
-			double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
-
-			if (r > .45 && rect.width > 20 && rect.height > 12)
+			vector<Rect> regionRects;
+			for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 			{
-				regionRects.push_back(rect);
+				Rect rect = boundingRect(contours[idx]);
+				if (rect.height > 400)
+					continue;
+
+				Mat maskROI(mask, rect);
+				maskROI = Scalar(0, 0, 0);
+
+				drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
+				double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
+
+				if (r > .45 && rect.width > 20 && rect.height > 12)
+				{
+					regionRects.push_back(rect);
+				}
 			}
-		}
 
-		Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
-		for each (Rect rect in regionRects)
-		{
-			Rect expanded(rect.x - 5, rect.y, rect.width + 10, rect.height);
-			rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
-		}
+			if (!regionRects.empty())
+			{
+				Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
+				for each (Rect rect in regionRects)
+				{
+					Rect expanded(rect.x - 5, rect.y, rect.width + 10, rect.height);
+					rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
+				}
 
-		findContours(rectMask, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+				findContours(rectMask, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		vector<Rect> mergedRects;
-		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
-		{
-			Rect rect = boundingRect(contours[idx]);
-			mergedRects.push_back(rect);
-		}
+				vector<Rect> mergedRects;
+				for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+				{
+					Rect rect = boundingRect(contours[idx]);
+					mergedRects.push_back(rect);
+				}
 
-		List<Region^>^ list = gcnew List<Region^>(5);
-		for each (Rect rect in mergedRects)
-		{
-			rectangle(image, rect, Scalar(0, 255, 0), 2);
+				if (!mergedRects.empty())
+				{
+					for each (Rect rect in mergedRects)
+					{
+						rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-			Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
-			list->Add(region);
+						Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
+						list->Add(region);
+					}
+				}
+			}
 		}
 
 		if (regionStream != nullptr)
