@@ -194,6 +194,7 @@ namespace ImageQuality
 
 								if (d < (1.5 * 0.5 * (a_min + b_min)))
 								{
+									line(image, Point(rect.x + a_x, rect.y + a_y), Point(rect.x + b_x, rect.y + b_y), Scalar(0, 0, 255));
 									linkCount++;
 								}
 							}
