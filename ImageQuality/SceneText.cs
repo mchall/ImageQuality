@@ -20,12 +20,13 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            var regions = _extractor.GetRegions(fileBytes, null);
+            var regions = _extractor.GetRegions(fileBytes);
             foreach (var region in OrderRegions(regions))
             {
                 using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                 {
-                    using (var page = OcrEngine.Instance.Process(pix))
+                    PageSegMode mode = PageSegMode.SingleLine;
+                    using (var page = OcrEngine.Instance.Process(pix, mode))
                     {
                         if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                         {
@@ -33,37 +34,6 @@ namespace ImageQuality
                             if (!String.IsNullOrEmpty(text))
                             {
                                 sb.AppendLine(text);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
-        }
-
-        public string DetectRegions(byte[] fileBytes, out byte[] debugBytes)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            using (var debugImg = new MemoryStream())
-            {
-                var regions = _extractor.GetRegions(fileBytes, debugImg);
-                debugBytes = debugImg.ToArray();
-
-                foreach (var region in OrderRegions(regions))
-                {
-                    using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
-                    {
-                        using (var page = OcrEngine.Instance.Process(pix))
-                        {
-                            if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
-                            {
-                                var text = page.GetText().Trim();
-                                if (!String.IsNullOrEmpty(text))
-                                {
-                                    sb.AppendLine(text);
-                                }
                             }
                         }
                     }

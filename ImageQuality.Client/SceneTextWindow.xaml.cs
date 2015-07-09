@@ -36,12 +36,12 @@ namespace ImageQualityClient
                 var sw = Stopwatch.StartNew();
 
                 byte[] regionImg;
-                ResultText.Text = _sceneText.DetectRegions(fileBytes, out regionImg).Trim();
+                ResultText.Text = _sceneText.DetectRegions(fileBytes).Trim();
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);
 
-                MemoryStream ms = new MemoryStream(regionImg);
+                MemoryStream ms = new MemoryStream(fileBytes);
                 var imageSource = new BitmapImage();
                 imageSource.BeginInit();
                 imageSource.StreamSource = ms;

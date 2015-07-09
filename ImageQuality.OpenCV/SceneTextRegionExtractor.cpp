@@ -34,6 +34,7 @@ namespace ImageQuality
 
 		Mat scaled;
 		pyrDown(output, scaled);
+		pyrUp(scaled, scaled);
 
 		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
 		morphologyEx(scaled, scaled, MORPH_CLOSE, morphKernel);
@@ -69,7 +70,7 @@ namespace ImageQuality
 		return output;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer, Stream^ regionStream)
+	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
 		Mat image = ReadImage(buffer);
@@ -236,10 +237,8 @@ namespace ImageQuality
 			}
 		}
 
-		if (regionStream != nullptr)
-		{
-			WriteToStream(".jpg", image, regionStream);
-		}
+		//imshow("debug", image);
+		//waitKey(0);
 
 		return list;
 	}
