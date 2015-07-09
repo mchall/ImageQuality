@@ -222,8 +222,8 @@ namespace ImageQuality
 								Size dstSize(rect.width * cosv + rect.height * sinv, rect.width * sinv + rect.height * cosv);
 								warpAffine(roi, roi, r, dstSize);
 
-								imshow("roi", roi);
-								waitKey(0);
+								//imshow("roi", roi);
+								//waitKey(0);
 
 								Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
 								list->Add(region);
