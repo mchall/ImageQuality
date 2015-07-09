@@ -32,7 +32,7 @@ namespace ImageQuality
 
             using (var page = OcrEngine.Instance.Process(pix))
             {
-                if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
+                if (page.GetMeanConfidence() >= OcrEngine.MinConfidence)
                 {
                     var text = page.GetText().Trim();
                     if (!String.IsNullOrEmpty(text))

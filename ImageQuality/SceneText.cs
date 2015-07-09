@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Tesseract;
 
 namespace ImageQuality
@@ -25,16 +26,11 @@ namespace ImageQuality
             {
                 using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                 {
-                    PageSegMode mode = PageSegMode.SingleLine;
-                    using (var page = OcrEngine.Instance.Process(pix, mode))
+                    using (var page = OcrEngine.Instance.Process(pix))
                     {
-                        if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
+                        if (page.GetMeanConfidence() >= OcrEngine.MinConfidence)
                         {
-                            var text = page.GetText().Trim();
-                            if (!String.IsNullOrEmpty(text))
-                            {
-                                sb.AppendLine(text);
-                            }
+                            EvaluateText(page.GetText(), sb);
                         }
                     }
                 }
@@ -48,11 +44,27 @@ namespace ImageQuality
             var sort = regions.ToList();
             sort.Sort((l, r) =>
                 {
-                    if (l.Y == r.Y)
+                    if (Math.Abs(l.Y - r.Y) < 15)
                         return l.X.CompareTo(r.X);
                     return l.Y.CompareTo(r.Y);
                 });
             return sort;
+        }
+
+        private void EvaluateText(string ocrText, StringBuilder sb)
+        {
+            if (ocrText != null)
+            {
+                var text = ocrText.Trim();
+                Regex rgx = new Regex("[^a-zA-Z0-9 ]");
+                text = rgx.Replace(text, " ");
+                text = text.Trim();
+
+                if (!String.IsNullOrEmpty(text) && text.Length > 2)
+                {
+                    sb.AppendLine(text);
+                }
+            }
         }
     }
 }

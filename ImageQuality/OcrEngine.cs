@@ -10,7 +10,7 @@ namespace ImageQuality
 {
     internal static class OcrEngine
     {
-        public const float MinConfidence = 0.6f;
+        public const float MinConfidence = 0.7f;
 
         private static TesseractEngine _ocr;
         public static TesseractEngine Instance
