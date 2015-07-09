@@ -219,7 +219,7 @@ namespace ImageQuality
 								Mat r = getRotationMatrix2D(pt, bestAngle, 1);
 								double sinv = r.at<double>(0, 1);
 								double cosv = r.at<double>(0, 0);
-								Size dstSize(rect.width * cosv + rect.height * sinv, rect.width * sinv + rect.height * cosv);
+								Size dstSize(std::abs(rect.width * cosv + rect.height * sinv), std::abs(rect.width * sinv + rect.height * cosv));
 								warpAffine(roi, roi, r, dstSize);
 
 								//imshow("roi", roi);

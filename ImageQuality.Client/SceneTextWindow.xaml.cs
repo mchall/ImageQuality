@@ -35,7 +35,6 @@ namespace ImageQualityClient
 
                 var sw = Stopwatch.StartNew();
 
-                byte[] regionImg;
                 ResultText.Text = _sceneText.DetectRegions(fileBytes).Trim();
 
                 sw.Stop();
