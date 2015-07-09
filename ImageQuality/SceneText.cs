@@ -20,22 +20,19 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            using (var ocrImg = new MemoryStream())
+            var regions = _extractor.GetRegions(fileBytes, null);
+            foreach (var region in OrderRegions(regions))
             {
-                var regions = _extractor.GetRegions(fileBytes, ocrImg, null);
-                using (var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray()))
+                using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                 {
-                    foreach (var region in OrderRegions(regions))
+                    using (var page = OcrEngine.Instance.Process(pix))
                     {
-                        using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
+                        if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                         {
-                            if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
+                            var text = page.GetText().Trim();
+                            if (!String.IsNullOrEmpty(text))
                             {
-                                var text = page.GetText().Trim();
-                                if (!String.IsNullOrEmpty(text))
-                                {
-                                    sb.AppendLine(text);
-                                }
+                                sb.AppendLine(text);
                             }
                         }
                     }
@@ -49,16 +46,16 @@ namespace ImageQuality
         {
             StringBuilder sb = new StringBuilder();
 
-            using (var ocrImg = new MemoryStream())
             using (var debugImg = new MemoryStream())
             {
-                var regions = _extractor.GetRegions(fileBytes, ocrImg, debugImg);
+                var regions = _extractor.GetRegions(fileBytes, debugImg);
                 debugBytes = debugImg.ToArray();
-                using (var pix = Pix.LoadTiffFromMemory(ocrImg.ToArray()))
+
+                foreach (var region in OrderRegions(regions))
                 {
-                    foreach (var region in OrderRegions(regions))
+                    using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                     {
-                        using (var page = OcrEngine.Instance.Process(pix, new Rect(region.X, region.Y, region.Width, region.Height)))
+                        using (var page = OcrEngine.Instance.Process(pix))
                         {
                             if (page.GetMeanConfidence() > OcrEngine.MinConfidence)
                             {

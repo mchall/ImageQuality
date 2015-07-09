@@ -6,12 +6,13 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	Region::Region(int x, int y, int width, int height)
+	Region::Region(int x, int y, int width, int height, array<byte>^ tiff)
 	{
 		_x = x;
 		_y = y;
 		_width = width;
 		_height = height;
+		_tiff = tiff;
 	}
 
 	int Region::X::get()
@@ -32,5 +33,10 @@ namespace ImageQuality
 	int Region::Height::get()
 	{
 		return _height;
+	}
+
+	array<byte>^ Region::Tiff::get()
+	{
+		return _tiff;
 	}
 }

@@ -69,21 +69,14 @@ namespace ImageQuality
 		return output;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer, Stream^ ocrImgStream, Stream^ regionStream)
+	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer, Stream^ regionStream)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
 		Mat image = ReadImage(buffer);
 
-		if (ocrImgStream != nullptr)
-		{
-			Mat tiff;
-			cvtColor(image, tiff, CV_BGR2GRAY);
-			threshold(tiff, tiff, 0, 255, THRESH_BINARY | THRESH_OTSU);
-
-			//threshold(tiff, tiff, 190, 255, THRESH_BINARY_INV); //todo
-
-			WriteToStream(".tiff", tiff, ocrImgStream);
-		}
+		Mat tiff;
+		cvtColor(image, tiff, CV_BGR2GRAY);
+		threshold(tiff, tiff, 0, 255, THRESH_BINARY | THRESH_OTSU);
 
 		Mat gray;
 		cvtColor(image, gray, CV_BGR2GRAY);
@@ -152,60 +145,91 @@ namespace ImageQuality
 					Mat edges;
 					Canny(scaled, edges, 128.0, 200.0, 3);
 
+					Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
+					morphologyEx(edges, edges, MORPH_GRADIENT, morphKernel);
+
 					Mat bin_edges;
 					threshold(edges, bin_edges, 32, 255, THRESH_BINARY | THRESH_OTSU);
 
+					Mat mask = Mat::zeros(bw.size(), CV_8UC1);
 					for each (Rect rect in mergedRects)
 					{
 						Mat edgesROI(bin_edges, rect);
 
-						vector<vector<Point> > subContours;
-						vector<Vec4i> subHierarchy;
-						findContours(edgesROI, subContours, subHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+						findContours(edgesROI, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-						int linkCount = 0;
-
-						for (int i = 0; i < subContours.size(); ++i)
+						if (!hierarchy.empty())
 						{
-							Rect a_r = boundingRect(subContours[i]);
-							double a_x = a_r.x + a_r.width / 2;
-							double a_y = a_r.y + a_r.height / 2;
-
-							for (int j = 0; j < subContours.size(); ++j)
+							vector<float> angles;
+							for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 							{
-								if (j == i){ continue; }
+								RotatedRect box = minAreaRect(contours[idx]);
 
-								Rect b_r = boundingRect(subContours[j]);
-								double b_x = b_r.x + b_r.width / 2;
-								double b_y = b_r.y + b_r.height / 2;
-								if (a_r.x < b_r.x + b_r.width && a_r.x + a_r.width > b_r.x &&
-									a_r.y < b_r.y + b_r.width && a_r.y + a_r.width > b_r.y)
+								float angle = box.angle;
+								if (angle < -45)
+									angle += 90;
+
+								angles.push_back(angle);
+
+								Point2f vertices[4];
+								box.points(vertices);
+								for (int i = 0; i < 4; i++)
+								line(image, vertices[i] + Point2f(rect.x, rect.y), vertices[(i + 1) % 4] + Point2f(rect.x, rect.y), Scalar(255, 0, 255));
+							}
+
+							float bestAngle;
+							int bestAngleCount = 1;
+							bool found = false;
+
+							for (int i = 0; i < angles.size() - 1; i++)
+							{
+								float angle = angles[i];
+								int count = 1;
+								for (int j = i + 1; j < angles.size(); j++)
 								{
-									continue;
+									if (i == j) continue;
+
+									if (abs(angles[i] - angles[j]) < 10)
+									{
+										if (std::abs(angles[j]) < std::abs(angles[i]))
+										{
+											angle = angles[j];
+										}
+										count++;
+									}
 								}
 
-								double a_min = std::min(a_r.width, a_r.height);
-								double b_min = std::min(b_r.width, b_r.height);
-								if (a_min > 1.5*b_min || b_min > 1.5*a_min){ continue; }
-
-								double d_x = a_x - b_x;
-								double d_y = a_y - b_y;
-								double d = sqrt(d_x*d_x + d_y*d_y);
-
-								if (d < (1.5 * 0.5 * (a_min + b_min)))
+								if (count > bestAngleCount && count >= angles.size() * 0.6)
 								{
-									line(image, Point(rect.x + a_x, rect.y + a_y), Point(rect.x + b_x, rect.y + b_y), Scalar(0, 0, 255));
-									linkCount++;
+									bestAngle = angle;
+									bestAngleCount = count;
+									found = true;
 								}
 							}
-						}
 
-						if (linkCount > 1)
-						{
-							rectangle(image, rect, Scalar(0, 255, 0), 2);
+							if (found)
+							{
+								rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height);
-							list->Add(region);
+								Mat roi(tiff, rect);
+
+								int len = max(rect.width, rect.height);
+								Point2f pt(len / 2., len / 2.);
+								Mat r = getRotationMatrix2D(pt, bestAngle, 1);
+								warpAffine(roi, roi, r, Size(len, len));
+
+								//imshow("roi", roi);
+								//waitKey(0);
+
+								//todo: crop
+
+								Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+								list->Add(region);
+							}
+							else
+							{
+								rectangle(image, rect, Scalar(0, 0, 0), 2);
+							}
 						}
 					}
 				}

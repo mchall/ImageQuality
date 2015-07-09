@@ -13,7 +13,7 @@ namespace ImageQuality {
 	public ref class SceneTextRegionExtractor
 	{
 	public:
-		IList<Region^>^ GetRegions(array<byte>^ buffer, Stream^ ocrImgStream, Stream^ regionStream);
+		IList<Region^>^ GetRegions(array<byte>^ buffer, Stream^ regionStream);
 		IList<array<byte>^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
