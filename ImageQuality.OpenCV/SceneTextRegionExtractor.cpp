@@ -217,12 +217,13 @@ namespace ImageQuality
 								int len = max(rect.width, rect.height);
 								Point2f pt(len / 2., len / 2.);
 								Mat r = getRotationMatrix2D(pt, bestAngle, 1);
-								warpAffine(roi, roi, r, Size(len, len));
+								double sinv = r.at<double>(0, 1);
+								double cosv = r.at<double>(0, 0);
+								Size dstSize(rect.width * cosv + rect.height * sinv, rect.width * sinv + rect.height * cosv);
+								warpAffine(roi, roi, r, dstSize);
 
-								//imshow("roi", roi);
-								//waitKey(0);
-
-								//todo: crop
+								imshow("roi", roi);
+								waitKey(0);
 
 								Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
 								list->Add(region);
