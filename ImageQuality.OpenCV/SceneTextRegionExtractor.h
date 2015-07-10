@@ -17,6 +17,7 @@ namespace ImageQuality {
 		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
+		float FindBestAngle(vector<float> angles);
 		IList<Region^>^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		array<byte>^ ToByteArray(Mat image, const string& extension);
 		void WriteToStream(const std::string& extension, Mat image, Stream^ stream);

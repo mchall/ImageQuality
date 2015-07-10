@@ -18,45 +18,33 @@ namespace ImageQuality
 
         public string WatermarkDetect(byte[] fileBytes)
         {
-            StringBuilder sb = new StringBuilder();
-
-            var regions = _extractor.SimpleWatermark(fileBytes);
-            foreach (var region in OrderRegions(regions))
-            {
-                using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
-                {
-                    using (var page = OcrEngine.Instance.Process(pix))
-                    {
-                        if (page.GetMeanConfidence() >= OcrEngine.MinConfidence)
-                        {
-                            EvaluateText(page.GetText(), sb);
-                        }
-                    }
-                }
-            }
-
-            return sb.ToString();
+            return Ocr(_extractor.SimpleWatermark(fileBytes), 0.6f);
         }
 
         public string NaturalSceneDetect(byte[] fileBytes)
         {
-            StringBuilder sb = new StringBuilder();
+            return Ocr(_extractor.GetRegions(fileBytes), 0.7f);
+        }
 
-            var regions = _extractor.GetRegions(fileBytes);
+        private string Ocr(IList<Region> regions, float minConfidence)
+        {
+            StringBuilder sb = new StringBuilder();
             foreach (var region in OrderRegions(regions))
             {
                 using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                 {
                     using (var page = OcrEngine.Instance.Process(pix))
                     {
-                        if (page.GetMeanConfidence() >= OcrEngine.MinConfidence)
+                        var confidence = page.GetMeanConfidence();
+                        //pix.Save(DateTime.Now.Ticks + "_" + Math.Round(confidence * 100) + ".tiff");
+
+                        if (confidence >= minConfidence)
                         {
                             EvaluateText(page.GetText(), sb);
                         }
                     }
                 }
             }
-
             return sb.ToString();
         }
 
