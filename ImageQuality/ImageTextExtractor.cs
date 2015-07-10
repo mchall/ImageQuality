@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -8,16 +7,38 @@ using Tesseract;
 
 namespace ImageQuality
 {
-    public class SceneText
+    public class ImageTextExtractor
     {
         private SceneTextRegionExtractor _extractor;
 
-        public SceneText()
+        public ImageTextExtractor()
         {
             _extractor = new SceneTextRegionExtractor();
         }
 
-        public string DetectRegions(byte[] fileBytes)
+        public string WatermarkDetect(byte[] fileBytes)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            var regions = _extractor.SimpleWatermark(fileBytes);
+            foreach (var region in OrderRegions(regions))
+            {
+                using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
+                {
+                    using (var page = OcrEngine.Instance.Process(pix))
+                    {
+                        if (page.GetMeanConfidence() >= OcrEngine.MinConfidence)
+                        {
+                            EvaluateText(page.GetText(), sb);
+                        }
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public string NaturalSceneDetect(byte[] fileBytes)
         {
             StringBuilder sb = new StringBuilder();
 

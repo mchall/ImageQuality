@@ -6,45 +6,42 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<array<byte>^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
+	IList<Region^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
+		List<Region^>^ list = gcnew List<Region^>(5);
 
-		List<array<byte>^>^ images = gcnew List<array<byte>^>(4);
+		IList<Region^>^ red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
+		list->AddRange(red);
 
-		Mat red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
-		images->Add(ToByteArray(red, ".tiff"));
+		IList<Region^>^ yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
+		list->AddRange(yellow);
 
-		Mat yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
-		images->Add(ToByteArray(yellow, ".tiff"));
+		IList<Region^>^ black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
+		list->AddRange(black);
 
-		Mat black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
-		images->Add(ToByteArray(black, ".tiff"));
+		IList<Region^>^ white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
+		list->AddRange(white);
 
-		Mat white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
-		images->Add(ToByteArray(white, ".tiff"));
-
-		return images;
+		return list;
 	}
 
-	Mat SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
+	IList<Region^>^ SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
 	{
 		Mat output;
 		inRange(img, lower, upper, output);
 
-		Mat scaled;
-		pyrDown(output, scaled);
-		pyrUp(scaled, scaled);
+		Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
+		morphologyEx(output, output, MORPH_CLOSE, morphKernel);
 
-		Mat morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
-		morphologyEx(scaled, scaled, MORPH_CLOSE, morphKernel);
+		Mat contourImg = output.clone();
 
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
-		findContours(scaled, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(contourImg, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 		if (hierarchy.empty())
-			return output;
+			return gcnew List<Region^>(0);
 
 		float biggest = 0, angle;
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
@@ -67,7 +64,10 @@ namespace ImageQuality
 		Mat r = getRotationMatrix2D(pt, angle, 1);
 		warpAffine(output, output, r, Size(len, len));
 
-		return output;
+		cvtColor(output, output, CV_GRAY2BGR);
+
+		array<byte>^ b = ToByteArray(output, ".tiff");
+		return GetRegions(b);
 	}
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
@@ -94,7 +94,7 @@ namespace ImageQuality
 		threshold(grad, bw, 32, 255, THRESH_BINARY | THRESH_OTSU);
 
 		Mat connected;
-		morphKernel = getStructuringElement(MORPH_RECT, Size(5, 1));
+		morphKernel = getStructuringElement(MORPH_RECT, Size(8, 1));
 		morphologyEx(bw, connected, MORPH_CLOSE, morphKernel);
 
 		Mat mask = Mat::zeros(bw.size(), CV_8UC1);

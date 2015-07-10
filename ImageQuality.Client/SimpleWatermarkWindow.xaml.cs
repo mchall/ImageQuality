@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -17,12 +14,12 @@ namespace ImageQualityClient
     /// </summary>
     public partial class SimpleWatermarkWindow : Window
     {
-        private SimpleWatermarkDetect _watermarkDetect;
+        private ImageTextExtractor _textExtractor;
 
         public SimpleWatermarkWindow()
         {
             InitializeComponent();
-            _watermarkDetect = new SimpleWatermarkDetect();
+            _textExtractor = new ImageTextExtractor();
         }
 
         private void DetectText_Click(object sender, RoutedEventArgs e)
@@ -35,7 +32,7 @@ namespace ImageQualityClient
 
                 var sw = Stopwatch.StartNew();
 
-                ResultText.Text = _watermarkDetect.Detect(fileBytes).Trim();
+                ResultText.Text = _textExtractor.WatermarkDetect(fileBytes).Trim();
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);

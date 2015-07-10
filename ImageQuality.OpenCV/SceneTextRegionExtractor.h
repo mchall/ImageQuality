@@ -14,10 +14,10 @@ namespace ImageQuality {
 	{
 	public:
 		IList<Region^>^ GetRegions(array<byte>^ buffer);
-		IList<array<byte>^>^ SimpleWatermark(array<byte>^ buffer);
+		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
-		Mat DetectAndRotate(Mat img, Scalar lower, Scalar upper);
+		IList<Region^>^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		array<byte>^ ToByteArray(Mat image, const string& extension);
 		void WriteToStream(const std::string& extension, Mat image, Stream^ stream);
 		Mat ReadImage(array<byte>^ buffer);

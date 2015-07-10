@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -17,12 +14,12 @@ namespace ImageQualityClient
     /// </summary>
     public partial class SceneTextWindow : Window
     {
-        private SceneText _sceneText;
+        private ImageTextExtractor _sceneText;
 
         public SceneTextWindow()
         {
             InitializeComponent();
-            _sceneText = new SceneText();
+            _sceneText = new ImageTextExtractor();
         }
 
         private void DetectText_Click(object sender, RoutedEventArgs e)
@@ -35,7 +32,7 @@ namespace ImageQualityClient
 
                 var sw = Stopwatch.StartNew();
 
-                ResultText.Text = _sceneText.DetectRegions(fileBytes).Trim();
+                ResultText.Text = _sceneText.NaturalSceneDetect(fileBytes).Trim();
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);
