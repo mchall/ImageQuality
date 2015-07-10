@@ -226,7 +226,7 @@ namespace ImageQuality
 			}
 		}
 
-		imshow("debug", image);
+		//imshow("debug", image);
 		//waitKey(0);
 
 		return list;

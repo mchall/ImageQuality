@@ -1,0 +1,9 @@
+﻿<Window x:Class="ImageQualityClient.ProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="50" Width="300" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None" BorderBrush="LightGray" BorderThickness="1">
+    <Grid Margin="5">
+        <ProgressBar x:Name="ProgressBar" Height="20" />
+        <TextBlock Text="Crunching..."  VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+    </Grid>
+</Window>

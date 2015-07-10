@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using ImageQuality;
 
 namespace ImageQualityClient
 {
@@ -41,6 +45,57 @@ namespace ImageQualityClient
         {
             BlurWindow window = new BlurWindow();
             window.ShowDialog();
+        }
+
+        private void Bulk_Click(object sender, RoutedEventArgs e)
+        {
+            var progress = new ProgressWindow();
+            progress.Owner = this;
+            progress.Show();
+
+            BackgroundWorker worker = new BackgroundWorker();
+            worker.WorkerReportsProgress = true;
+            worker.DoWork += (s, ev) =>
+                {
+                    var brisque = new Brisque(ReadResource("ImageQualityClient.custom_model"));
+                    var folder = @"C:\Users\michaelha\Desktop\Newlands";
+                    var files = Directory.EnumerateFiles(folder).ToList();
+
+                    int count = 0;
+                    foreach (var file in files)
+                    {
+                        var b = File.ReadAllBytes(file);
+                        var score = brisque.Score(b);
+                        if (score > 60)
+                        {
+                            File.Copy(file, Path.Combine(@"C:\Users\michaelha\Desktop\OUTPUT", Path.GetFileName(file)));
+                        }
+                        count++;
+
+                        var p = ((double)count / (double)files.Count) * 100;
+                        worker.ReportProgress((int)p, p);
+                    }
+                };
+            worker.RunWorkerCompleted += (s, ev) =>
+                {
+                    progress.Close();
+                };
+            worker.ProgressChanged += (s, ev) =>
+                {
+                    var p = (double)ev.UserState;
+                    progress.UpdateProgress(p);
+                };
+            worker.RunWorkerAsync();            
+        }
+
+        private string ReadResource(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
+            }
         }
     }
 }
