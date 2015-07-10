@@ -12,6 +12,10 @@ namespace ImageQuality {
 
 	public ref class SceneTextRegionExtractor
 	{
+	private:
+		const int MinWidth = 20;
+		const int MinHeight = 12;
+
 	public:
 		IList<Region^>^ GetRegions(array<byte>^ buffer);
 		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);

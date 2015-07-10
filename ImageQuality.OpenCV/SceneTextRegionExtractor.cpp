@@ -48,7 +48,7 @@ namespace ImageQuality
 				RotatedRect box = minAreaRect(contours[idx]);
 
 				float area = box.size.area();
-				if (box.size.width > 20 && box.size.height > 12)
+				if (box.size.width > MinWidth && box.size.height > MinHeight)
 				{
 					float angle = box.angle;
 					if (angle < -45)
@@ -125,7 +125,7 @@ namespace ImageQuality
 				drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
 				double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
 
-				if (r > .45 && rect.width > 20 && rect.height > 12)
+				if (r > .45 && rect.width > MinWidth && rect.height > MinHeight)
 				{
 					regionRects.push_back(rect);
 				}
@@ -164,7 +164,6 @@ namespace ImageQuality
 					for each (Rect rect in mergedRects)
 					{
 						Mat edgesROI(bin_edges, rect);
-
 						findContours(edgesROI, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 						if (!hierarchy.empty())
@@ -177,6 +176,16 @@ namespace ImageQuality
 								float angle = box.angle;
 								if (angle < -45)
 									angle += 90;
+
+								if (box.size.height < MinHeight || box.size.width < MinWidth)
+								{
+									continue;
+								}
+
+								if (box.size.height > box.size.width * 5)
+								{
+									continue;
+								}
 
 								angles.push_back(angle);
 
@@ -218,7 +227,7 @@ namespace ImageQuality
 		}
 
 		imshow("debug", image);
-		waitKey(0);
+		//waitKey(0);
 
 		return list;
 	}
@@ -229,29 +238,32 @@ namespace ImageQuality
 		int bestAngleCount = 1;
 		bool found = false;
 
-		for (int i = 0; i < angles.size() - 1; i++)
+		if (!angles.empty())
 		{
-			float angle = angles[i];
-			int count = 1;
-			for (int j = i + 1; j < angles.size(); j++)
+			for (int i = 0; i < angles.size() - 1; i++)
 			{
-				if (i == j) continue;
-
-				if (abs(angles[i] - angles[j]) < 10)
+				float angle = angles[i];
+				int count = 1;
+				for (int j = i + 1; j < angles.size(); j++)
 				{
-					if (std::abs(angles[j]) < std::abs(angles[i]))
-					{
-						angle = angles[j];
-					}
-					count++;
-				}
-			}
+					if (i == j) continue;
 
-			if (count > bestAngleCount && count >= angles.size() * 0.6)
-			{
-				bestAngle = angle;
-				bestAngleCount = count;
-				found = true;
+					if (abs(angles[i] - angles[j]) < 10)
+					{
+						if (std::abs(angles[j]) < std::abs(angles[i]))
+						{
+							angle = angles[j];
+						}
+						count++;
+					}
+				}
+
+				if (count > bestAngleCount && count >= angles.size() * 0.6)
+				{
+					bestAngle = angle;
+					bestAngleCount = count;
+					found = true;
+				}
 			}
 		}
 		return found ? bestAngle : Nullable<float>();
