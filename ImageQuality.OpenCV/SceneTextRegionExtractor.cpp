@@ -31,7 +31,7 @@ namespace ImageQuality
 		Mat output;
 		inRange(img, lower, upper, output);
 
-		Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(5, 5));
+		Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
 		morphologyEx(output, output, MORPH_CLOSE, morphKernel);
 
 		Mat contourImg = output.clone();
@@ -40,37 +40,42 @@ namespace ImageQuality
 		vector<Vec4i> hierarchy;
 		findContours(contourImg, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		if (hierarchy.empty())
-			return gcnew List<Region^>(0);
-
-		vector<float> angles;
-		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+		if (!hierarchy.empty())
 		{
-			RotatedRect box = minAreaRect(contours[idx]);
-
-			float area = box.size.area();
-			if (box.size.width > 20 && box.size.height > 12)
+			vector<float> angles;
+			for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 			{
-				float angle = box.angle;
-				if (angle < -45)
-					angle += 90;
-				angles.push_back(angle);
+				RotatedRect box = minAreaRect(contours[idx]);
+
+				float area = box.size.area();
+				if (box.size.width > 20 && box.size.height > 12)
+				{
+					float angle = box.angle;
+					if (angle < -45)
+						angle += 90;
+					angles.push_back(angle);
+				}
+			}
+
+			if (!angles.empty())
+			{
+				Nullable<float> bestAngle = FindBestAngle(angles);
+				if (bestAngle.HasValue)
+				{
+					int len = max(output.cols, output.rows);
+					Point2f pt(len / 2., len / 2.);
+					Mat r = getRotationMatrix2D(pt, bestAngle.Value, 1);
+					warpAffine(output, output, r, Size(len, len));
+
+					cvtColor(output, output, CV_GRAY2BGR);
+
+					array<byte>^ b = ToByteArray(output, ".tiff");
+					return GetRegions(b);
+				}
 			}
 		}
 
-		if (!angles.empty())
-		{
-			float bestAngle = FindBestAngle(angles);
-			int len = max(output.cols, output.rows);
-			Point2f pt(len / 2., len / 2.);
-			Mat r = getRotationMatrix2D(pt, bestAngle, 1);
-			warpAffine(output, output, r, Size(len, len));
-		}
-
-		cvtColor(output, output, CV_GRAY2BGR);
-
-		array<byte>^ b = ToByteArray(output, ".tiff");
-		return GetRegions(b);
+		return gcnew List<Region^>(0);
 	}
 
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
@@ -181,37 +186,44 @@ namespace ImageQuality
 								line(image, vertices[i] + Point2f(rect.x, rect.y), vertices[(i + 1) % 4] + Point2f(rect.x, rect.y), Scalar(255, 0, 255));
 							}
 
-							float bestAngle = FindBestAngle(angles);
-							rectangle(image, rect, Scalar(0, 255, 0), 2);
+							Nullable<float> bestAngle = FindBestAngle(angles);
+							if (bestAngle.HasValue)
+							{
+								rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-							Mat roi(tiff, rect);
+								Mat roi(tiff, rect);
 
-							int len = max(rect.width, rect.height);
-							Point2f pt(len / 2., len / 2.);
-							Mat r = getRotationMatrix2D(pt, bestAngle, 1);
-							double sinv = r.at<double>(0, 1);
-							double cosv = r.at<double>(0, 0);
-							Size dstSize(std::abs(rect.width * cosv + rect.height * sinv), std::abs(rect.width * sinv + rect.height * cosv));
-							warpAffine(roi, roi, r, dstSize);
+								int len = max(rect.width, rect.height);
+								Point2f pt(len / 2., len / 2.);
+								Mat r = getRotationMatrix2D(pt, bestAngle.Value, 1);
+								double sinv = r.at<double>(0, 1);
+								double cosv = r.at<double>(0, 0);
+								Size dstSize(std::abs(rect.width * cosv + rect.height * sinv), std::abs(rect.width * sinv + rect.height * cosv));
+								warpAffine(roi, roi, r, dstSize);
 
-							//imshow("roi", roi);
-							//waitKey(0);
+								//imshow("roi", roi);
+								//waitKey(0);
 
-							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
-							list->Add(region);
+								Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+								list->Add(region);
+							}
+							else
+							{
+								rectangle(image, rect, Scalar(0, 0, 0), 2);
+							}
 						}
 					}
 				}
 			}
 		}
 
-		//imshow("debug", image);
-		//waitKey(0);
+		imshow("debug", image);
+		waitKey(0);
 
 		return list;
 	}
 
-	float SceneTextRegionExtractor::FindBestAngle(vector<float> angles)
+	Nullable<float> SceneTextRegionExtractor::FindBestAngle(vector<float> angles)
 	{
 		float bestAngle;
 		int bestAngleCount = 1;
@@ -242,7 +254,7 @@ namespace ImageQuality
 				found = true;
 			}
 		}
-		return found ? bestAngle : 0;
+		return found ? bestAngle : Nullable<float>();
 	}
 
 	Mat SceneTextRegionExtractor::ReadImage(array<byte>^ buffer)
