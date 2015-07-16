@@ -151,33 +151,17 @@ namespace ImageQuality
 
 				if (!mergedRects.empty())
 				{
-					Mat edges;
-					Canny(scaled, edges, 128.0, 200.0, 3);
-
-					Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(3, 3));
-					morphologyEx(edges, edges, MORPH_GRADIENT, morphKernel);
-
-					Mat bin_edges;
-					threshold(edges, bin_edges, 32, 255, THRESH_BINARY | THRESH_OTSU);
-
-					Mat mask = Mat::zeros(bw.size(), CV_8UC1);
 					for each (Rect rect in mergedRects)
 					{
-						Mat edgesROI(bin_edges, rect);
-						findContours(edgesROI, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+						rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-						if (!hierarchy.empty())
-						{
-							rectangle(image, rect, Scalar(0, 255, 0), 2);
+						Mat roi(tiff, rect);
 
-							Mat roi(tiff, rect);
+						//imshow("roi", roi);
+						//waitKey(0);
 
-							//imshow("roi", roi);
-							//waitKey(0);
-
-							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
-							list->Add(region);
-						}
+						Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+						list->Add(region);
 					}
 				}
 			}
