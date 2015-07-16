@@ -168,64 +168,20 @@ namespace ImageQuality
 
 						if (!hierarchy.empty())
 						{
-							vector<float> angles;
-							for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
-							{
-								RotatedRect box = minAreaRect(contours[idx]);
+							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-								float angle = box.angle;
-								if (angle < -45)
-									angle += 90;
+							Mat roi(tiff, rect);
 
-								if (box.size.height < MinHeight || box.size.width < MinWidth)
-								{
-									continue;
-								}
+							//imshow("roi", roi);
+							//waitKey(0);
 
-								if (box.size.height > box.size.width * 5)
-								{
-									continue;
-								}
-
-								angles.push_back(angle);
-
-								Point2f vertices[4];
-								box.points(vertices);
-								for (int i = 0; i < 4; i++)
-								line(image, vertices[i] + Point2f(rect.x, rect.y), vertices[(i + 1) % 4] + Point2f(rect.x, rect.y), Scalar(255, 0, 255));
-							}
-
-							Nullable<float> bestAngle = FindBestAngle(angles);
-							if (bestAngle.HasValue)
-							{
-								rectangle(image, rect, Scalar(0, 255, 0), 2);
-
-								Mat roi(tiff, rect);
-
-								int len = max(rect.width, rect.height);
-								Point2f pt(len / 2., len / 2.);
-								Mat r = getRotationMatrix2D(pt, bestAngle.Value, 1);
-								double sinv = r.at<double>(0, 1);
-								double cosv = r.at<double>(0, 0);
-								Size dstSize(std::abs(rect.width * cosv + rect.height * sinv), std::abs(rect.width * sinv + rect.height * cosv));
-								warpAffine(roi, roi, r, dstSize);
-
-								//imshow("roi", roi);
-								//waitKey(0);
-
-								Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
-								list->Add(region);
-							}
-							else
-							{
-								rectangle(image, rect, Scalar(0, 0, 0), 2);
-							}
+							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+							list->Add(region);
 						}
 					}
 				}
 			}
 		}
-
 		//imshow("debug", image);
 		//waitKey(0);
 

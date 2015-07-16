@@ -57,16 +57,16 @@ namespace ImageQualityClient
             worker.WorkerReportsProgress = true;
             worker.DoWork += (s, ev) =>
                 {
-                    var brisque = new Brisque(ReadResource("ImageQualityClient.custom_model"));
-                    var folder = @"C:\Users\michaelha\Desktop\Newlands";
+                    ImageTextExtractor extractor = new ImageTextExtractor();
+                    var folder = @"C:\Users\michaelha\Desktop\SuburbDownload";
                     var files = Directory.EnumerateFiles(folder).ToList();
 
                     int count = 0;
                     foreach (var file in files)
                     {
                         var b = File.ReadAllBytes(file);
-                        var score = brisque.Score(b);
-                        if (score > 60)
+                        var text = extractor.WatermarkDetect(b);
+                        if (!String.IsNullOrEmpty(text))
                         {
                             File.Copy(file, Path.Combine(@"C:\Users\michaelha\Desktop\OUTPUT", Path.GetFileName(file)));
                         }

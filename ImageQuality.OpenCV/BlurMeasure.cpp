@@ -9,6 +9,7 @@ namespace ImageQuality
 	double BlurMeasure::Nayar89(array<byte>^ buffer)
 	{
 		Mat image = ReadImage(buffer);
+		cvtColor(image, image, CV_BGR2YUV);
 
 		Mat lap;
 		Laplacian(image, lap, CV_64F);
@@ -22,6 +23,7 @@ namespace ImageQuality
 	double BlurMeasure::Pech2000(array<byte>^ buffer)
 	{
 		Mat image = ReadImage(buffer);
+		cvtColor(image, image, CV_BGR2YUV);
 
 		Mat lap;
 		Laplacian(image, lap, CV_64F);
