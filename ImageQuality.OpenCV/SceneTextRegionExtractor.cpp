@@ -213,13 +213,25 @@ namespace ImageQuality
 			}
 		}
 
-		if (divided.empty()) //Text has spaces between chars
+		if (divided.empty() || divided.size() < 2) //Text has spaces between chars
 		{
 			return false;
 		}
 
-		//todo: more
+		/*Mat mask = Mat(Size(val.size(), 100), CV_8UC1, Scalar(255));
+		for (int i = 0; i < val.size(); i++)
+		{
+			int x = (int)(val[i] * 100);
+			for (int j = 0; j < x; j++)
+			{
+				mask.at<uchar>(Point(i, 99 - j)) = 0;
+			}
+		}
 
+		imshow("roi", roi);
+		imshow("test", mask);
+		waitKey(0);*/
+		
 		return true;
 	}
 
