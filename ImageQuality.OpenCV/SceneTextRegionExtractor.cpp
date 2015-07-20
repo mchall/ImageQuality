@@ -62,9 +62,11 @@ namespace ImageQuality
 				Nullable<float> bestAngle = FindBestAngle(angles);
 				if (bestAngle.HasValue)
 				{
+					float angle = bestAngle.Value < 20 ? 0 : bestAngle.Value;
+
 					int len = max(output.cols, output.rows);
 					Point2f pt(len / 2., len / 2.);
-					Mat r = getRotationMatrix2D(pt, bestAngle.Value, 1);
+					Mat r = getRotationMatrix2D(pt, angle, 1);
 					warpAffine(output, output, r, Size(len, len));
 
 					cvtColor(output, output, CV_GRAY2BGR);
