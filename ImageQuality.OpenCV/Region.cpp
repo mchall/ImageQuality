@@ -6,6 +6,15 @@ using namespace cv;
 
 namespace ImageQuality
 {
+	Region::Region(Rect rect, array<byte>^ tiff)
+	{
+		_x = rect.x;
+		_y = rect.y;
+		_width = rect.width;
+		_height = rect.height;
+		_tiff = tiff;
+	}
+
 	Region::Region(int x, int y, int width, int height, array<byte>^ tiff)
 	{
 		_x = x;

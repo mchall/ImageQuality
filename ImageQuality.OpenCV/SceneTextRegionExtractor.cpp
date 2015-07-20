@@ -136,7 +136,7 @@ namespace ImageQuality
 				Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
 				for each (Rect rect in regionRects)
 				{
-					Rect expanded(rect.x - 5, rect.y, rect.width + 10, rect.height);
+					Rect expanded(rect.x - 10, rect.y, rect.width + 20, rect.height);
 					rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
 				}
 
@@ -146,7 +146,8 @@ namespace ImageQuality
 				for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 				{
 					Rect rect = boundingRect(contours[idx]);
-					mergedRects.push_back(rect);
+					Rect tighter(rect.x + 5, rect.y - 1, rect.width - 10, rect.height + 2);
+					mergedRects.push_back(tighter);
 				}
 
 				if (!mergedRects.empty())
@@ -161,7 +162,7 @@ namespace ImageQuality
 							//imshow("roi", roi);
 							//waitKey(0);
 
-							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+							Region^ region = gcnew Region(rect, ToByteArray(roi, ".tiff"));
 							list->Add(region);
 						}
 						else

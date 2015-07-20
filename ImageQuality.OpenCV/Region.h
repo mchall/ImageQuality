@@ -22,6 +22,7 @@ namespace ImageQuality {
 		array<byte>^ _tiff;
 
 	internal:
+		Region(Rect rect, array<byte>^ tiff);
 		Region(int x, int y, int width, int height, array<byte>^ tiff);
 
 	public:
