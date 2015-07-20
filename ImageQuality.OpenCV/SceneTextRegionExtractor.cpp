@@ -125,7 +125,7 @@ namespace ImageQuality
 				drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
 				double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
 
-				if (r > .45 && rect.width > MinWidth && rect.height > MinHeight)
+				if (r > .45 && rect.width >= 10 && rect.height >= 12)
 				{
 					regionRects.push_back(rect);
 				}
@@ -147,7 +147,10 @@ namespace ImageQuality
 				{
 					Rect rect = boundingRect(contours[idx]);
 					Rect tighter(rect.x + 5, rect.y - 1, rect.width - 10, rect.height + 2);
-					mergedRects.push_back(tighter);
+					if (tighter.width >= MinWidth && tighter.height >= MinHeight)
+					{
+						mergedRects.push_back(tighter);
+					}
 				}
 
 				if (!mergedRects.empty())
@@ -155,14 +158,16 @@ namespace ImageQuality
 					for each (Rect rect in mergedRects)
 					{
 						Mat roi(tiff, rect);
-						if (HeuristicEvaluation(roi))
+						Mat local = roi.clone();
+
+						if (HeuristicEvaluation(local))
 						{
 							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
 							//imshow("roi", roi);
 							//waitKey(0);
 
-							Region^ region = gcnew Region(rect, ToByteArray(roi, ".tiff"));
+							Region^ region = gcnew Region(rect, ToByteArray(local, ".tiff"));
 							list->Add(region);
 						}
 						else
