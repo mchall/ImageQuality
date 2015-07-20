@@ -77,7 +77,7 @@ namespace ImageQuality
 
 		return gcnew List<Region^>(0);
 	}
-
+		
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
@@ -153,23 +153,74 @@ namespace ImageQuality
 				{
 					for each (Rect rect in mergedRects)
 					{
-						rectangle(image, rect, Scalar(0, 255, 0), 2);
-
 						Mat roi(tiff, rect);
+						if (HeuristicEvaluation(roi))
+						{
+							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
-						//imshow("roi", roi);
-						//waitKey(0);
+							//imshow("roi", roi);
+							//waitKey(0);
 
-						Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
-						list->Add(region);
+							Region^ region = gcnew Region(rect.x, rect.y, rect.width, rect.height, ToByteArray(roi, ".tiff"));
+							list->Add(region);
+						}
+						else
+						{
+							rectangle(image, rect, Scalar(0, 0, 255), 2);
+						}
 					}
 				}
 			}
 		}
+
 		//imshow("debug", image);
 		//waitKey(0);
 
 		return list;
+	}
+
+	bool SceneTextRegionExtractor::HeuristicEvaluation(Mat roi)
+	{
+		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
+		if (totC < 0.5)
+		{
+			bitwise_not(roi, roi);
+		}
+
+		vector<double> val;
+		for (int x = 0; x < roi.cols; x++)
+		{
+			Mat col = roi.col(x);
+			double c = (roi.rows - countNonZero(col)) / (double)roi.rows;
+			val.push_back(c);
+		}
+
+		vector<vector<double>> divided;
+		vector<double> current;
+		for (int i = 0; i < val.size(); i++)
+		{
+			if (val[i] == 0)
+			{
+				if (!current.empty())
+				{
+					divided.push_back(current);
+					current.clear();
+				}
+			}
+			else
+			{
+				current.push_back(val[i]);
+			}
+		}
+
+		if (divided.empty()) //Text has spaces between chars
+		{
+			return false;
+		}
+
+		//todo: more
+
+		return true;
 	}
 
 	Nullable<float> SceneTextRegionExtractor::FindBestAngle(vector<float> angles)

@@ -21,6 +21,7 @@ namespace ImageQuality {
 		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
+		bool HeuristicEvaluation(Mat roi);
 		Nullable<float> FindBestAngle(vector<float> angles);
 		IList<Region^>^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		array<byte>^ ToByteArray(Mat image, const string& extension);
