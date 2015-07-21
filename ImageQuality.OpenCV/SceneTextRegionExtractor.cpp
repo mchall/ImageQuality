@@ -62,7 +62,7 @@ namespace ImageQuality
 				Nullable<float> bestAngle = FindBestAngle(angles);
 				if (bestAngle.HasValue)
 				{
-					float angle = bestAngle.Value < 20 ? 0 : bestAngle.Value;
+					float angle = (bestAngle.Value > -18 && bestAngle.Value < 18) ? 0 : bestAngle.Value;
 
 					int len = max(output.cols, output.rows);
 					Point2f pt(len / 2., len / 2.);
