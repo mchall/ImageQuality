@@ -22,6 +22,7 @@ namespace ImageQuality {
 
 	private:
 		bool HeuristicEvaluation(Mat roi);
+		vector<vector<double>> HeuristicSplit(vector<double> values);
 		Nullable<float> FindBestAngle(vector<float> angles);
 		IList<Region^>^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		array<byte>^ ToByteArray(Mat image, const string& extension);

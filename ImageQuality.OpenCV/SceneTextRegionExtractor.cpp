@@ -195,19 +195,69 @@ namespace ImageQuality
 			bitwise_not(roi, roi);
 		}
 
-		vector<double> val;
+		vector<double> horVals;
+		for (int x = 0; x < roi.rows; x++)
+		{
+			Mat row = roi.row(x);
+			double c = (roi.cols - countNonZero(row)) / (double)roi.cols;
+			horVals.push_back(c);
+		}
+
+		if (horVals.empty() || horVals[0] != 0 || horVals[horVals.size() - 1] != 0)
+		{
+			return false;
+		}
+
+		vector<double> verVals;
 		for (int x = 0; x < roi.cols; x++)
 		{
 			Mat col = roi.col(x);
 			double c = (roi.rows - countNonZero(col)) / (double)roi.rows;
-			val.push_back(c);
+			verVals.push_back(c);
 		}
 
+		vector<vector<double>> vertDivided = HeuristicSplit(verVals);
+
+		if (vertDivided.empty() || vertDivided.size() < 2) //Text has spaces between chars
+		{
+			return false;
+		}
+
+		/*Mat vertMask = Mat(Size(verVals.size(), 100), CV_8UC1, Scalar(255));
+		for (int i = 0; i < verVals.size(); i++)
+		{
+			int x = (int)(verVals[i] * 100);
+			for (int j = 0; j < x; j++)
+			{
+				vertMask.at<uchar>(Point(i, 99 - j)) = 0;
+			}
+		}
+
+		Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
+		for (int i = 0; i < horVals.size(); i++)
+		{
+			int x = (int)(horVals[i] * 100);
+			for (int j = 0; j < x; j++)
+			{
+				horMask.at<uchar>(Point(j, i)) = 0;
+			}
+		}
+
+		imshow("roi", roi);
+		imshow("vertical_mask", vertMask);
+		imshow("horizontal_mask", horMask);
+		waitKey(0);*/
+		
+		return true;
+	}
+
+	vector<vector<double>> SceneTextRegionExtractor::HeuristicSplit(vector<double> values)
+	{
 		vector<vector<double>> divided;
 		vector<double> current;
-		for (int i = 0; i < val.size(); i++)
+		for (int i = 0; i < values.size(); i++)
 		{
-			if (val[i] == 0)
+			if (values[i] == 0)
 			{
 				if (!current.empty())
 				{
@@ -217,30 +267,10 @@ namespace ImageQuality
 			}
 			else
 			{
-				current.push_back(val[i]);
+				current.push_back(values[i]);
 			}
 		}
-
-		if (divided.empty() || divided.size() < 2) //Text has spaces between chars
-		{
-			return false;
-		}
-
-		/*Mat mask = Mat(Size(val.size(), 100), CV_8UC1, Scalar(255));
-		for (int i = 0; i < val.size(); i++)
-		{
-			int x = (int)(val[i] * 100);
-			for (int j = 0; j < x; j++)
-			{
-				mask.at<uchar>(Point(i, 99 - j)) = 0;
-			}
-		}
-
-		imshow("roi", roi);
-		imshow("test", mask);
-		waitKey(0);*/
-		
-		return true;
+		return divided;
 	}
 
 	Nullable<float> SceneTextRegionExtractor::FindBestAngle(vector<float> angles)
