@@ -148,7 +148,7 @@ namespace ImageQuality
 				for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 				{
 					Rect rect = boundingRect(contours[idx]);
-					Rect tighter(rect.x + 5, rect.y - 1, rect.width - 10, rect.height + 2);
+					Rect tighter(rect.x + 10, rect.y - 1, rect.width - 20, rect.height + 2);
 					if (tighter.width >= MinWidth && tighter.height >= MinHeight)
 					{
 						mergedRects.push_back(tighter);
