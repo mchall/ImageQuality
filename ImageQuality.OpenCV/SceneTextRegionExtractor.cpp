@@ -129,7 +129,7 @@ namespace ImageQuality
 
 				if (r > .45 && rect.width >= 10 && rect.height >= 12)
 				{
-					regionRects.push_back(rect);
+					regionRects.push_back(rect); 
 				}
 			}
 
@@ -190,7 +190,7 @@ namespace ImageQuality
 	bool SceneTextRegionExtractor::HeuristicEvaluation(Mat roi)
 	{
 		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
-		if (totC < 0.5)
+		if (totC < 0.4)
 		{
 			bitwise_not(roi, roi);
 		}
@@ -205,6 +205,20 @@ namespace ImageQuality
 
 		if (horVals.empty() || horVals[0] != 0 || horVals[horVals.size() - 1] != 0)
 		{
+			/*Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
+			for (int i = 0; i < horVals.size(); i++)
+			{
+				int x = (int)(horVals[i] * 100);
+				for (int j = 0; j < x; j++)
+				{
+					horMask.at<uchar>(Point(j, i)) = 0;
+				}
+			}
+
+			imshow("roi", roi);
+			imshow("horizontal_mask", horMask);
+			waitKey(0);*/
+
 			return false;
 		}
 
@@ -220,34 +234,23 @@ namespace ImageQuality
 
 		if (vertDivided.empty() || vertDivided.size() < 2) //Text has spaces between chars
 		{
+			/*Mat vertMask = Mat(Size(verVals.size(), 100), CV_8UC1, Scalar(255));
+			for (int i = 0; i < verVals.size(); i++)
+			{
+				int x = (int)(verVals[i] * 100);
+				for (int j = 0; j < x; j++)
+				{
+					vertMask.at<uchar>(Point(i, 99 - j)) = 0;
+				}
+			}
+
+			imshow("roi", roi);
+			imshow("vertical_mask", vertMask);
+			waitKey(0);*/
+
 			return false;
 		}
 
-		/*Mat vertMask = Mat(Size(verVals.size(), 100), CV_8UC1, Scalar(255));
-		for (int i = 0; i < verVals.size(); i++)
-		{
-			int x = (int)(verVals[i] * 100);
-			for (int j = 0; j < x; j++)
-			{
-				vertMask.at<uchar>(Point(i, 99 - j)) = 0;
-			}
-		}
-
-		Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
-		for (int i = 0; i < horVals.size(); i++)
-		{
-			int x = (int)(horVals[i] * 100);
-			for (int j = 0; j < x; j++)
-			{
-				horMask.at<uchar>(Point(j, i)) = 0;
-			}
-		}
-
-		imshow("roi", roi);
-		imshow("vertical_mask", vertMask);
-		imshow("horizontal_mask", horMask);
-		waitKey(0);*/
-		
 		return true;
 	}
 
