@@ -191,16 +191,17 @@ namespace ImageQuality
 			}
 		}
 
-		imshow("debug", image);
+		//imshow("debug", image);
 		//waitKey(0);
 
 		return list;
 	}
 
+
+
 	bool SceneTextRegionExtractor::HorizontalHeuristics(Mat roi)
 	{
-		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
-		if (totC < 0.5)
+		if (NeedsInverse(roi))
 		{
 			bitwise_not(roi, roi);
 		}
@@ -211,11 +212,15 @@ namespace ImageQuality
 			Mat row = roi.row(x);
 			double c = (roi.cols - countNonZero(row)) / (double)roi.cols;
 			horVals.push_back(c);
+			cout << c << ";";
 		}
+
+		cout << endl;
 
 		vector<vector<double>> horDivided = HeuristicSplit(horVals);
 
-		if (horDivided.empty() || horDivided.size() > 2) //todo: iffy - keep?
+		if (horDivided.empty() || horDivided.size() > 2 || 
+			horVals.empty() || horVals[0] > 0.01 || horVals[horVals.size() - 1] > 0.01)
 		{
 			/*Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
 			for (int i = 0; i < horVals.size(); i++)
@@ -239,8 +244,7 @@ namespace ImageQuality
 
 	bool SceneTextRegionExtractor::VerticalHeuristics(Mat roi)
 	{
-		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
-		if (totC < 0.5)
+		if (NeedsInverse(roi))
 		{
 			bitwise_not(roi, roi);
 		}
@@ -275,6 +279,20 @@ namespace ImageQuality
 		}
 
 		return true;
+	}
+
+	bool SceneTextRegionExtractor::NeedsInverse(Mat roi)
+	{
+		Mat row = roi.row(roi.rows / 2);
+
+		int v1 = row.at<uchar>(0);
+		int v2 = row.at<uchar>(roi.cols - 1);
+
+		if (v1 == 0 && v2 == 0)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	vector<vector<double>> SceneTextRegionExtractor::HeuristicSplit(vector<double> values)
