@@ -129,7 +129,17 @@ namespace ImageQuality
 
 				if (r > .45 && rect.width >= 10 && rect.height >= 12)
 				{
-					regionRects.push_back(rect); 
+					Mat roi(tiff, rect);
+					Mat local = roi.clone();
+
+					if (HorizontalHeuristics(local))
+					{
+						regionRects.push_back(rect);
+					}
+					else
+					{
+						rectangle(image, rect, Scalar(0, 255, 255), 1);
+					}
 				}
 			}
 
@@ -162,7 +172,7 @@ namespace ImageQuality
 						Mat roi(tiff, rect);
 						Mat local = roi.clone();
 
-						if (HeuristicEvaluation(local))
+						if (VerticalHeuristics(local))
 						{
 							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
@@ -174,23 +184,23 @@ namespace ImageQuality
 						}
 						else
 						{
-							rectangle(image, rect, Scalar(0, 0, 255), 2);
+							rectangle(image, rect, Scalar(0, 0, 255), 1);
 						}
 					}
 				}
 			}
 		}
 
-		//imshow("debug", image);
+		imshow("debug", image);
 		//waitKey(0);
 
 		return list;
 	}
 
-	bool SceneTextRegionExtractor::HeuristicEvaluation(Mat roi)
+	bool SceneTextRegionExtractor::HorizontalHeuristics(Mat roi)
 	{
 		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
-		if (totC < 0.4)
+		if (totC < 0.5)
 		{
 			bitwise_not(roi, roi);
 		}
@@ -203,7 +213,9 @@ namespace ImageQuality
 			horVals.push_back(c);
 		}
 
-		if (horVals.empty() || horVals[0] != 0 || horVals[horVals.size() - 1] != 0)
+		vector<vector<double>> horDivided = HeuristicSplit(horVals);
+
+		if (horDivided.empty() || horDivided.size() > 2) //todo: iffy - keep?
 		{
 			/*Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
 			for (int i = 0; i < horVals.size(); i++)
@@ -220,6 +232,17 @@ namespace ImageQuality
 			waitKey(0);*/
 
 			return false;
+		}
+
+		return true;
+	}
+
+	bool SceneTextRegionExtractor::VerticalHeuristics(Mat roi)
+	{
+		double totC = countNonZero(roi) / (double)(roi.cols * roi.rows);
+		if (totC < 0.5)
+		{
+			bitwise_not(roi, roi);
 		}
 
 		vector<double> verVals;
@@ -273,6 +296,10 @@ namespace ImageQuality
 				current.push_back(values[i]);
 			}
 		}
+
+		if (divided.empty())
+			divided.push_back(values);
+
 		return divided;
 	}
 
