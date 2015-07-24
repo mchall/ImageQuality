@@ -145,7 +145,9 @@ namespace ImageQuality
 
 			if (!regionRects.empty())
 			{
-				vector<Rect> mergedRects = MergeRects(regionRects);
+				vector<Rect> mergedRects = MergeRects(regionRects, 10); //letters
+				mergedRects = MergeRects(mergedRects, 15); //words
+
 				if (!mergedRects.empty())
 				{
 					for each (Rect rect in mergedRects)
@@ -183,7 +185,7 @@ namespace ImageQuality
 		return (left.x < right.x); 
 	}
 
-	vector<Rect> SceneTextRegionExtractor::MergeRects(vector<Rect> rects)
+	vector<Rect> SceneTextRegionExtractor::MergeRects(vector<Rect> rects, int expand)
 	{
 		if (rects.empty())
 			return rects;
@@ -199,8 +201,8 @@ namespace ImageQuality
 				Rect local = rects[i];
 				for (int j = i + 1; j < rects.size(); j++)
 				{
-					Rect temp(local.x, local.y, local.width + 15, local.height);
-					Rect temp2(rects[j].x - 15, rects[j].y, rects[j].width, rects[j].height);
+					Rect temp(local.x, local.y, local.width + expand, local.height);
+					Rect temp2(rects[j].x - expand, rects[j].y, rects[j].width, rects[j].height);
 
 					Rect interset = (temp & temp2);
 					if (interset != temp && interset != temp2 && interset.area() > 0)
