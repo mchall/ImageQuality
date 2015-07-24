@@ -296,11 +296,8 @@ namespace ImageQuality
 
 	bool SceneTextRegionExtractor::NeedsInverse(Mat roi)
 	{
-		Mat row = roi.row(roi.rows / 2);
-
-		int v1 = row.at<uchar>(0);
-		int v2 = row.at<uchar>(roi.cols - 1);
-
+		int v1 = roi.at<uchar>(0, 0);
+		int v2 = roi.at<uchar>(roi.rows - 1, roi.cols - 1);
 		if (v1 == 0 && v2 == 0)
 		{
 			return true;
