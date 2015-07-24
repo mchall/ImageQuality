@@ -18,12 +18,19 @@ namespace ImageQuality
 
         public string WatermarkDetect(byte[] fileBytes)
         {
-            return Ocr(_extractor.SimpleWatermark(fileBytes), 0.6f);
+            List<Region> regions = new List<Region>();
+            foreach (var result in _extractor.SimpleWatermark(fileBytes))
+            {
+                regions.AddRange(result.Regions);
+            }
+            return Ocr(regions, 0.6f);
         }
 
-        public string NaturalSceneDetect(byte[] fileBytes)
+        public string NaturalSceneDetect(byte[] fileBytes, out byte[] debugBytes)
         {
-            return Ocr(_extractor.GetRegions(fileBytes), 0.7f);
+            var result = _extractor.GetRegions(fileBytes);
+            debugBytes = result.Debug;
+            return Ocr(result.Regions, 0.7f);
         }
 
         private string Ocr(IList<Region> regions, float minConfidence)

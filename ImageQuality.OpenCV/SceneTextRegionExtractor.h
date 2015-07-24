@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Region.h"
+#include "GetRegionsResult.h"
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -17,8 +18,8 @@ namespace ImageQuality {
 		const int MinHeight = 12;
 
 	public:
-		IList<Region^>^ GetRegions(array<byte>^ buffer);
-		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);
+		GetRegionsResult^ GetRegions(array<byte>^ buffer);
+		IList<GetRegionsResult^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
 		vector<Rect> MergeRects(vector<Rect> rects, int expand);
@@ -27,7 +28,7 @@ namespace ImageQuality {
 		vector<vector<double>> HeuristicSplit(vector<double> values);
 		bool NeedsInverse(Mat roi);
 		Nullable<float> FindBestAngle(vector<float> angles);
-		IList<Region^>^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
+		GetRegionsResult^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
 		array<byte>^ ToByteArray(Mat image, const string& extension);
 		void WriteToStream(const std::string& extension, Mat image, Stream^ stream);
 		Mat ReadImage(array<byte>^ buffer);

@@ -32,12 +32,13 @@ namespace ImageQualityClient
 
                 var sw = Stopwatch.StartNew();
 
-                ResultText.Text = _sceneText.NaturalSceneDetect(fileBytes).Trim();
+                byte[] debugBytes;
+                ResultText.Text = _sceneText.NaturalSceneDetect(fileBytes, out debugBytes).Trim();
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);
 
-                MemoryStream ms = new MemoryStream(fileBytes);
+                MemoryStream ms = new MemoryStream(debugBytes);
                 var imageSource = new BitmapImage();
                 imageSource.BeginInit();
                 imageSource.StreamSource = ms;

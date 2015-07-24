@@ -6,27 +6,31 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<Region^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
+	IList<GetRegionsResult^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
-		List<Region^>^ list = gcnew List<Region^>(5);
+		List<GetRegionsResult^>^ list = gcnew List<GetRegionsResult^>(4);
 
-		IList<Region^>^ red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
-		list->AddRange(red);
+		GetRegionsResult^ red = DetectAndRotate(img, Scalar(0, 0, 200), Scalar(50, 50, 255));
+		if (red != nullptr)
+			list->Add(red);
 
-		IList<Region^>^ yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
-		list->AddRange(yellow);
+		GetRegionsResult^ yellow = DetectAndRotate(img, Scalar(0, 225, 225), Scalar(50, 255, 255));
+		if (yellow != nullptr)
+			list->Add(yellow);
 
-		IList<Region^>^ black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
-		list->AddRange(black);
+		GetRegionsResult^ black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
+		if (black != nullptr)
+			list->Add(black);
 
-		IList<Region^>^ white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
-		list->AddRange(white);
+		GetRegionsResult^ white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
+		if (white != nullptr)
+			list->Add(white);
 
 		return list;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
+	GetRegionsResult^ SceneTextRegionExtractor::DetectAndRotate(Mat img, Scalar lower, Scalar upper)
 	{
 		Mat output;
 		inRange(img, lower, upper, output);
@@ -77,10 +81,10 @@ namespace ImageQuality
 			}
 		}
 
-		return gcnew List<Region^>(0);
+		return nullptr;
 	}
 
-	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
+	GetRegionsResult^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
 		Mat image = ReadImage(buffer);
@@ -177,7 +181,8 @@ namespace ImageQuality
 		//imshow("debug", image);
 		//waitKey(0);
 
-		return list;
+		GetRegionsResult^ result = gcnew GetRegionsResult(list, ToByteArray(image, ".jpg"));
+		return result;
 	}
 
 	bool sortRects(Rect left, Rect right) 
