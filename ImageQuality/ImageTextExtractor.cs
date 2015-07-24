@@ -33,7 +33,7 @@ namespace ImageQuality
             {
                 using (var pix = Pix.LoadTiffFromMemory(region.Tiff))
                 {
-                    using (var page = OcrEngine.Instance.Process(pix))
+                    using (var page = OcrEngine.Instance.Process(pix, PageSegMode.SingleLine))
                     {
                         var confidence = page.GetMeanConfidence();
                         //pix.Save(DateTime.Now.Ticks + "_" + Math.Round(confidence * 100) + ".tiff");
