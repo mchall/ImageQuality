@@ -21,6 +21,7 @@ namespace ImageQuality {
 		IList<Region^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
+		vector<Rect> MergeRects(vector<Rect> rects);
 		bool VerticalHeuristics(Mat roi);
 		bool HorizontalHeuristics(Mat roi);
 		vector<vector<double>> HeuristicSplit(vector<double> values);

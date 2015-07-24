@@ -79,7 +79,7 @@ namespace ImageQuality
 
 		return gcnew List<Region^>(0);
 	}
-		
+
 	IList<Region^>^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
@@ -145,26 +145,7 @@ namespace ImageQuality
 
 			if (!regionRects.empty())
 			{
-				Mat rectMask(Size(gray.cols, gray.rows), gray.type(), Scalar(0, 0, 0));
-				for each (Rect rect in regionRects)
-				{
-					Rect expanded(rect.x - 10, rect.y, rect.width + 20, rect.height);
-					rectangle(rectMask, expanded, Scalar(255, 255, 255), 2);
-				}
-
-				findContours(rectMask, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-				vector<Rect> mergedRects;
-				for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
-				{
-					Rect rect = boundingRect(contours[idx]);
-					Rect tighter(rect.x - 1, rect.y - 1, rect.width + 2, rect.height + 2);
-					if (tighter.width >= MinWidth && tighter.height >= MinHeight)
-					{
-						mergedRects.push_back(tighter);
-					}
-				}
-
+				vector<Rect> mergedRects = MergeRects(regionRects);
 				if (!mergedRects.empty())
 				{
 					for each (Rect rect in mergedRects)
@@ -197,6 +178,43 @@ namespace ImageQuality
 		return list;
 	}
 
+	bool sortRects(Rect left, Rect right) 
+	{ 
+		return (left.x < right.x); 
+	}
+
+	vector<Rect> SceneTextRegionExtractor::MergeRects(vector<Rect> rects)
+	{
+		if (rects.empty())
+			return rects;
+
+		sort(rects.begin(), rects.end(), sortRects);
+
+		List<int> indexes;
+		vector<Rect> merged;
+		for (int i = 0; i < rects.size(); i++)
+		{
+			if (!indexes.Contains(i))
+			{
+				Rect local = rects[i];
+				for (int j = i + 1; j < rects.size(); j++)
+				{
+					Rect temp(local.x, local.y, local.width + 15, local.height);
+					Rect temp2(rects[j].x - 15, rects[j].y, rects[j].width, rects[j].height);
+
+					Rect interset = (temp & temp2);
+					if (interset != temp && interset != temp2 && interset.area() > 0)
+					{
+						local = local | rects[j];
+						indexes.Add(j);
+					}
+				}
+				merged.push_back(local);
+			}
+		}
+		return merged;
+	}
+
 	bool SceneTextRegionExtractor::HorizontalHeuristics(Mat roi)
 	{
 		if (NeedsInverse(roi))
@@ -210,10 +228,7 @@ namespace ImageQuality
 			Mat row = roi.row(x);
 			double c = (roi.cols - countNonZero(row)) / (double)roi.cols;
 			horVals.push_back(c);
-			cout << c << ";";
 		}
-
-		cout << endl;
 
 		vector<vector<double>> horDivided = HeuristicSplit(horVals);
 
