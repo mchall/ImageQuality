@@ -26,6 +26,12 @@ namespace ImageQuality
             return Ocr(regions, 0.6f);
         }
 
+        public string NaturalSceneDetect(byte[] fileBytes)
+        {
+            var result = _extractor.GetRegions(fileBytes);
+            return Ocr(result.Regions, 0.7f);
+        }
+
         public string NaturalSceneDetect(byte[] fileBytes, out byte[] debugBytes)
         {
             var result = _extractor.GetRegions(fileBytes);

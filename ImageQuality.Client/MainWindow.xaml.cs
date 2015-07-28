@@ -65,7 +65,7 @@ namespace ImageQualityClient
                     foreach (var file in files)
                     {
                         var b = File.ReadAllBytes(file);
-                        var text = extractor.WatermarkDetect(b);
+                        var text = extractor.NaturalSceneDetect(b);
                         if (!String.IsNullOrEmpty(text))
                         {
                             File.Copy(file, Path.Combine(@"C:\Users\michaelha\Desktop\OUTPUT", Path.GetFileName(file)));
