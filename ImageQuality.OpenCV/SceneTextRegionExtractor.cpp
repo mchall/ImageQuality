@@ -210,10 +210,17 @@ namespace ImageQuality
 					Rect temp2(rects[j].x - expand, rects[j].y, rects[j].width, rects[j].height);
 
 					Rect interset = (temp & temp2);
-					if (interset != temp && interset != temp2 && interset.area() > 0)
+					if (interset != temp && interset != temp2)
 					{
-						local = local | rects[j];
-						indexes.Add(j);
+						temp = Rect(local.x, local.y + local.height / 2 - 4, local.width + expand, 8);
+						temp2 = Rect(rects[j].x - expand, rects[j].y + rects[j].height / 2 - 4, rects[j].width, 8);
+
+						interset = (temp & temp2);
+						if (interset.area() > 0)
+						{
+							local = local | rects[j];
+							indexes.Add(j);
+						}
 					}
 				}
 				merged.push_back(local);
@@ -240,7 +247,7 @@ namespace ImageQuality
 		vector<vector<double>> horDivided = HeuristicSplit(horVals);
 
 		if (horDivided.empty() || horDivided.size() > 2 || 
-			horVals.empty() || horVals[0] > 0.01 || horVals[horVals.size() - 1] > 0.01)
+			horVals.empty() || horVals[0] > 0.05 || horVals[horVals.size() - 1] > 0.05)
 		{
 			/*Mat horMask = Mat(Size(100, horVals.size()), CV_8UC1, Scalar(255));
 			for (int i = 0; i < horVals.size(); i++)
