@@ -312,7 +312,10 @@ namespace ImageQuality
 	{
 		int v1 = roi.at<uchar>(0, 0);
 		int v2 = roi.at<uchar>(roi.rows - 1, roi.cols - 1);
-		if (v1 == 0 && v2 == 0)
+		int v3 = roi.at<uchar>(0, roi.cols - 1);
+		int v4 = roi.at<uchar>(roi.rows - 1, 0);
+
+		if ((v1 + v2 + v3 + v4) / 4 < 128)
 		{
 			return true;
 		}
