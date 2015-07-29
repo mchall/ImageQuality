@@ -305,6 +305,23 @@ namespace ImageQuality
 			return false;
 		}
 
+		Mat clone = roi.clone();
+		bitwise_not(clone, clone);
+
+		vector<vector<Point>> contours;
+		vector<Vec4i> hierarchy;
+		findContours(clone, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+		Mat t = Mat::zeros(roi.size(), CV_8UC1);
+		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
+		{
+			Rect br = boundingRect(contours[idx]);
+			if (br.area() > roi.size().area() * 0.5)
+			{
+				return false;
+			}
+		}
+
 		return true;
 	}
 
