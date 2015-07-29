@@ -78,15 +78,31 @@ namespace ImageQuality
             if (ocrText != null)
             {
                 var text = ocrText.Trim();
-                Regex rgx = new Regex("[^a-zA-Z0-9 ]");
+                Regex rgx = new Regex("[^a-zA-Z0-9@. ]");
                 text = rgx.Replace(text, " ");
                 text = text.Trim();
 
-                if (!String.IsNullOrEmpty(text) && text.Length > 2)
+                if (Heuristic(text))
                 {
-                    sb.AppendLine(text);
+                    if (!String.IsNullOrEmpty(text))
+                    {
+                        sb.AppendLine(text);
+                    }
                 }
             }
+        }
+
+        private bool Heuristic(string text)
+        {
+            string eval = "aeiouyAEIOUY0123456789"; //vowels or letters
+            string filtered = new String(text.Where(c => eval.Contains(c)).ToArray());
+            if (filtered.Length == 0)
+                return false;
+
+            //Heuristic - remove common OCR of IIII, HHHH, LLLL, etc. for bars
+            eval = " .IiLlHE";
+            filtered = new String(text.Where(c => !eval.Contains(c)).ToArray());
+            return filtered.Length > 1;
         }
     }
 }

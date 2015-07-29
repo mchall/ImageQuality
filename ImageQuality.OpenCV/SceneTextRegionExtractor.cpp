@@ -131,7 +131,7 @@ namespace ImageQuality
 				drawContours(mask, contours, idx, Scalar(255, 255, 255), CV_FILLED);
 				double r = (double)countNonZero(maskROI) / (rect.width*rect.height);
 
-				if (r > .45 && rect.width >= 10 && rect.height >= 12)
+				if (r > .45 && rect.width >= MinWidth / 2 && rect.height >= MinHeight)
 				{
 					Mat roi(tiff, rect);
 					Mat local = roi.clone();
@@ -159,7 +159,7 @@ namespace ImageQuality
 						Mat roi(tiff, rect);
 						Mat local = roi.clone();
 
-						if (VerticalHeuristics(local))
+						if (rect.width >= MinWidth && rect.height > MinHeight && VerticalHeuristics(local))
 						{
 							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
