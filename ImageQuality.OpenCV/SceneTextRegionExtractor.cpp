@@ -159,7 +159,7 @@ namespace ImageQuality
 						Mat roi(tiff, rect);
 						Mat local = roi.clone();
 
-						if (rect.width >= MinWidth && rect.height > MinHeight && VerticalHeuristics(local))
+						if (rect.width >= MinWidth * 3 && rect.height > MinHeight && VerticalHeuristics(local))
 						{
 							rectangle(image, rect, Scalar(0, 255, 0), 2);
 
@@ -235,8 +235,6 @@ namespace ImageQuality
 		{
 			bitwise_not(roi, roi);
 		}
-
-		GaussianBlur(roi, roi, Size(3, 3), 3);
 
 		vector<double> horVals;
 		for (int x = 0; x < roi.rows; x++)
