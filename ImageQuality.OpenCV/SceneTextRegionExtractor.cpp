@@ -312,14 +312,40 @@ namespace ImageQuality
 		vector<Vec4i> hierarchy;
 		findContours(clone, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		Mat t = Mat::zeros(roi.size(), CV_8UC1);
+		int sum = 0;
+		double total = 0;
+		vector<int> yPoints;
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 		{
 			Rect br = boundingRect(contours[idx]);
-			if (br.area() > roi.size().area() * 0.5)
+			if (br.height > 2 && br.width > 2)
 			{
-				return false;
+				int midPt = br.y + br.height / 2;
+				sum += midPt;
+				total++;
+				yPoints.push_back(midPt);
+
+				if (br.area() > roi.size().area() * 0.5)
+				{
+					return false;
+				}
 			}
+		}
+
+		double avg = sum / total;
+		int outsideCount = 0;
+		for each (int pt in yPoints)
+		{
+			if (pt > avg + 10 || pt < avg - 10)
+			{
+				outsideCount++;
+			}
+		}
+
+		double outsidePercentage = outsideCount / total;
+		if (outsidePercentage > 0.4)
+		{
+			return false;
 		}
 
 		return true;
