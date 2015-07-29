@@ -99,8 +99,8 @@ namespace ImageQuality
             if (filtered.Length == 0)
                 return false;
 
-            //Heuristic - remove common OCR of IIII, HHHH, LLLL, etc. for bars
-            eval = " .IiLlHE";
+            //Heuristic - remove common OCR of IIII, HHHH, LLLL, OOOO etc. for bars, circles
+            eval = " .IiLlHE0Oo";
             filtered = new String(text.Where(c => !eval.Contains(c)).ToArray());
             return filtered.Length > 1;
         }
