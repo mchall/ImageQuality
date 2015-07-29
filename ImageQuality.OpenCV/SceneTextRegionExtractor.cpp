@@ -344,7 +344,7 @@ namespace ImageQuality
 			}
 		}
 
-		if (divided.empty())
+		if (divided.empty() && !current.empty())
 			divided.push_back(values);
 
 		return divided;
