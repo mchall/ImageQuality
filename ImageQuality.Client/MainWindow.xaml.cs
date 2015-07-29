@@ -65,10 +65,11 @@ namespace ImageQualityClient
                     foreach (var file in files)
                     {
                         var b = File.ReadAllBytes(file);
-                        var text = extractor.NaturalSceneDetect(b);
+                        byte[] debug;
+                        var text = extractor.NaturalSceneDetect(b, out debug);
                         if (!String.IsNullOrEmpty(text))
                         {
-                            File.Copy(file, Path.Combine(@"C:\Users\michaelha\Desktop\OUTPUT", Path.GetFileName(file)));
+                            File.WriteAllBytes(Path.Combine(@"C:\Users\michaelha\Desktop\OUTPUT", Path.GetFileName(file)), debug);
                         }
                         count++;
 

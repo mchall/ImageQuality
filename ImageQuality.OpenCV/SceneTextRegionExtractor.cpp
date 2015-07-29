@@ -110,7 +110,7 @@ namespace ImageQuality
 		Mat connected;
 		morphKernel = getStructuringElement(MORPH_RECT, Size(8, 1));
 		morphologyEx(bw, connected, MORPH_CLOSE, morphKernel);
-
+				
 		Mat mask = Mat::zeros(bw.size(), CV_8UC1);
 		vector<vector<Point>> contours;
 		vector<Vec4i> hierarchy;
@@ -235,6 +235,8 @@ namespace ImageQuality
 		{
 			bitwise_not(roi, roi);
 		}
+
+		GaussianBlur(roi, roi, Size(3, 3), 3);
 
 		vector<double> horVals;
 		for (int x = 0; x < roi.rows; x++)
