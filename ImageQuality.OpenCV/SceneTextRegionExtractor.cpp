@@ -245,7 +245,6 @@ namespace ImageQuality
 		}
 
 		vector<vector<double>> horDivided = HeuristicSplit(horVals);
-
 		if (horDivided.empty() || horDivided.size() > 2 || 
 			horVals.empty() || horVals[0] > 0.05 || horVals[horVals.size() - 1] > 0.05)
 		{
@@ -285,7 +284,6 @@ namespace ImageQuality
 		}
 
 		vector<vector<double>> vertDivided = HeuristicSplit(verVals);
-
 		if (vertDivided.empty() || vertDivided.size() < 2) //Text has spaces between chars
 		{
 			/*Mat vertMask = Mat(Size(verVals.size(), 100), CV_8UC1, Scalar(255));
@@ -315,6 +313,10 @@ namespace ImageQuality
 		int sum = 0;
 		double total = 0;
 		vector<int> yPoints;
+
+		if (hierarchy.empty())
+			return false;
+
 		for (int idx = 0; idx >= 0; idx = hierarchy[idx][0])
 		{
 			Rect br = boundingRect(contours[idx]);
@@ -368,6 +370,10 @@ namespace ImageQuality
 	vector<vector<double>> SceneTextRegionExtractor::HeuristicSplit(vector<double> values)
 	{
 		vector<vector<double>> divided;
+
+		if (values.empty())
+			return divided;
+
 		vector<double> current;
 		for (int i = 0; i < values.size(); i++)
 		{
