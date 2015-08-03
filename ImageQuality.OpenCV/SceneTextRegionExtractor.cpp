@@ -19,10 +19,6 @@ namespace ImageQuality
 		if (yellow != nullptr)
 			list->Add(yellow);
 
-		GetRegionsResult^ black = DetectAndRotate(img, Scalar(0, 0, 0), Scalar(25, 25, 25));
-		if (black != nullptr)
-			list->Add(black);
-
 		GetRegionsResult^ white = DetectAndRotate(img, Scalar(200, 200, 200), Scalar(255, 255, 255));
 		if (white != nullptr)
 			list->Add(white);
