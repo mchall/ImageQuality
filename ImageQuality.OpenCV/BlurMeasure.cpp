@@ -6,32 +6,25 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	double BlurMeasure::Nayar89(array<byte>^ buffer)
+	double BlurMeasure::BlurTest(array<byte>^ buffer)
 	{
 		Mat image = ReadImage(buffer);
-		cvtColor(image, image, CV_BGR2YUV);
+		resize(image, image, Size(512, 512));
 
-		Mat lap;
-		Laplacian(image, lap, CV_64F);
+		Mat gray;
+		cvtColor(image, gray, CV_BGR2GRAY);
 
-		Scalar mu, sigma;
-		meanStdDev(lap, mu, sigma);
+		Mat detected_edges;
+		Canny(gray, detected_edges, 0.4, 0.4 * 3, 3);
 
-		return sigma.val[0] * sigma.val[0];
-	}
+		double maxval;
+		double average = mean(detected_edges)[0];
+		int* const maxIdx = (int*)malloc(sizeof(detected_edges));
 
-	double BlurMeasure::Pech2000(array<byte>^ buffer)
-	{
-		Mat image = ReadImage(buffer);
-		cvtColor(image, image, CV_BGR2YUV);
+		minMaxIdx(detected_edges, 0, &maxval, 0, maxIdx);
 
-		Mat lap;
-		Laplacian(image, lap, CV_64F);
-
-		Scalar mu, sigma;
-		meanStdDev(lap, mu, sigma);
-
-		return sigma.val[0] * sigma.val[0];
+		double blurresult = average / maxval;
+		return blurresult;
 	}
 
 	Mat BlurMeasure::ReadImage(array<byte>^ buffer)

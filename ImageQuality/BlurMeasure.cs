@@ -17,7 +17,7 @@ namespace ImageQuality
 
         public double BlurMeasure(byte[] fileBytes)
         {
-            return _measure.Nayar89(fileBytes);
+            return _measure.BlurTest(fileBytes);
         }
     }
 }
