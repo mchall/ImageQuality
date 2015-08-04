@@ -40,8 +40,6 @@ namespace ImageQuality
 		Mat morphKernel = getStructuringElement(MORPH_ELLIPSE, Size(2, 2));
 		morphologyEx(highlighted, highlighted, MORPH_CLOSE, morphKernel);
 
-		addWeighted(highlighted, 1, img, 0, 0.0, highlighted);
-
 		Mat contourImg = output.clone();
 
 		vector<vector<Point>> contours;
@@ -186,8 +184,8 @@ namespace ImageQuality
 			}
 		}
 
-		imshow("debug", image);
-		waitKey(0);
+		//imshow("debug", image);
+		//waitKey(0);
 
 		GetRegionsResult^ result = gcnew GetRegionsResult(list, ToByteArray(image, ".jpg"));
 		return result;
