@@ -73,11 +73,6 @@ namespace ImageQuality
 					int len = max(output.cols, output.rows);
 					Point2f pt(len / 2., len / 2.);
 					Mat r = getRotationMatrix2D(pt, angle, 1);
-					/*warpAffine(output, output, r, Size(len, len));
-
-					cvtColor(output, output, CV_GRAY2BGR);
-
-					array<byte>^ b = ToByteArray(output, ".tiff");*/
 
 					warpAffine(highlighted, highlighted, r, Size(len, len));
 					array<byte>^ b = ToByteArray(highlighted, ".jpg");
