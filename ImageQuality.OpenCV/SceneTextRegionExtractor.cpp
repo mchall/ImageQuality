@@ -145,8 +145,8 @@ namespace ImageQuality
 
 			if (!regionRects.empty())
 			{
-				vector<Rect> mergedRects = MergeRects(regionRects, 10); //letters
-				mergedRects = MergeRects(mergedRects, 15); //words
+				vector<Rect> mergedRects = MergeRects(image.cols, image.rows, regionRects, 10); //letters
+				mergedRects = MergeRects(image.cols, image.rows, mergedRects, 15); //words
 
 				if (!mergedRects.empty())
 				{
@@ -174,8 +174,8 @@ namespace ImageQuality
 			}
 		}
 
-		//imshow("debug", image);
-		//waitKey(0);
+		imshow("debug", image);
+		waitKey(0);
 
 		GetRegionsResult^ result = gcnew GetRegionsResult(list, ToByteArray(image, ".jpg"));
 		return result;
@@ -186,7 +186,7 @@ namespace ImageQuality
 		return (left.x < right.x); 
 	}
 
-	vector<Rect> SceneTextRegionExtractor::MergeRects(vector<Rect> rects, int expand)
+	vector<Rect> SceneTextRegionExtractor::MergeRects(int width, int height, vector<Rect> rects, int expand)
 	{
 		if (rects.empty())
 			return rects;
@@ -219,9 +219,20 @@ namespace ImageQuality
 						}
 					}
 				}
+
+				if (local.x + local.width > width)
+				{
+					local.width = width - local.x;
+				}
+				if (local.y + local.height > height)
+				{
+					local.height = height - local.y;
+				}
+
 				merged.push_back(local);
 			}
 		}
+
 		return merged;
 	}
 

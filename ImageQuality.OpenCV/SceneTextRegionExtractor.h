@@ -22,7 +22,7 @@ namespace ImageQuality {
 		IList<GetRegionsResult^>^ SimpleWatermark(array<byte>^ buffer);
 
 	private:
-		vector<Rect> MergeRects(vector<Rect> rects, int expand);
+		vector<Rect> MergeRects(int width, int height, vector<Rect> rects, int expand);
 		bool VerticalHeuristics(Mat roi);
 		bool HorizontalHeuristics(Mat roi);
 		vector<vector<double>> HeuristicSplit(vector<double> values);
