@@ -14,7 +14,7 @@
     <ProjectGuid>{CF50F6F0-665D-4FAF-90E2-3B9FAE8641EA}</ProjectGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>KorbitecVision</RootNamespace>
+    <RootNamespace>ImageQuality</RootNamespace>
     <ProjectName>ImageQuality.OpenCV</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
