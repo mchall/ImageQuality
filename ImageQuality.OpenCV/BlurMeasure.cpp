@@ -14,17 +14,13 @@ namespace ImageQuality
 		Mat gray;
 		cvtColor(image, gray, CV_BGR2GRAY);
 
-		Mat detected_edges;
-		Canny(gray, detected_edges, 0.4, 0.4 * 3, 3);
+		Mat laplacian;
+		Laplacian(gray, laplacian, CV_64F);
 
-		double maxval;
-		double average = mean(detected_edges)[0];
-		int* const maxIdx = (int*)malloc(sizeof(detected_edges));
-
-		minMaxIdx(detected_edges, 0, &maxval, 0, maxIdx);
-
-		double blurresult = average / maxval;
-		return blurresult;
+		Mat mean, stddev;
+		meanStdDev(laplacian, mean, stddev);
+		double val = stddev.at<double>(0, 0);
+		return val * val;
 	}
 
 	Mat BlurMeasure::ReadImage(array<byte>^ buffer)
