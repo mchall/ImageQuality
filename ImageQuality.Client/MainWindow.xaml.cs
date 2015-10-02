@@ -47,6 +47,12 @@ namespace ImageQualityClient
             window.ShowDialog();
         }
 
+        private void Intensity_Click(object sender, RoutedEventArgs e)
+        {
+            IntensityWindow window = new IntensityWindow();
+            window.ShowDialog();
+        }
+
         private void Bulk_Click(object sender, RoutedEventArgs e)
         {
             var progress = new ProgressWindow();
