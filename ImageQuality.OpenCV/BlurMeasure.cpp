@@ -20,6 +20,7 @@ namespace ImageQuality
 		Mat mean, stddev;
 		meanStdDev(laplacian, mean, stddev);
 		double val = stddev.at<double>(0, 0);
+
 		return val * val;
 	}
 

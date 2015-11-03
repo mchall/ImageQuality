@@ -53,6 +53,12 @@ namespace ImageQualityClient
             window.ShowDialog();
         }
 
+        private void HistogramComparison_Click(object sender, RoutedEventArgs e)
+        {
+            HistogramWindow window = new HistogramWindow();
+            window.ShowDialog();
+        }
+
         private void Bulk_Click(object sender, RoutedEventArgs e)
         {
             var progress = new ProgressWindow();

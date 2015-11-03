@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Histogram.cs" />
     <Compile Include="IntensityMeasure.cs" />
     <Compile Include="OcrEngine.cs" />
     <Compile Include="BlurMeasure.cs" />

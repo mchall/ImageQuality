@@ -109,6 +109,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     <ClInclude Include="BlurMeasure.h" />
     <ClInclude Include="BrisqueFeatureExtractor.h" />
     <ClInclude Include="GetRegionsResult.h" />
+    <ClInclude Include="Histogram.h" />
     <ClInclude Include="IntensityMeasure.h" />
     <ClInclude Include="Region.h" />
     <ClInclude Include="SceneTextRegionExtractor.h" />
@@ -119,6 +120,7 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="BlurMeasure.cpp" />
     <ClCompile Include="BrisqueFeatureExtractor.cpp" />
     <ClCompile Include="GetRegionsResult.cpp" />
+    <ClCompile Include="Histogram.cpp" />
     <ClCompile Include="IntensityMeasure.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SceneTextRegionExtractor.cpp" />
