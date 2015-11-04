@@ -15,22 +15,24 @@ namespace ImageQuality
             _measure = new ColorMeasure();
         }
 
-        public RGB ColorInfo(byte[] fileBytes)
+        public ColorInfoResult ColorInfo(byte[] fileBytes)
         {
             var info = _measure.GetColorInfo(fileBytes);
-            return new RGB()
+            return new ColorInfoResult()
             {
-                R = info.R,
-                G = info.G,
-                B = info.B,
+                Red = info.Red,
+                Green = info.Green,
+                Blue = info.Blue,
+                Yellow = info.Yellow,
             };
         }
     }
 
-    public class RGB
+    public class ColorInfoResult
     {
-        public double R { get; set; }
-        public double G { get; set; }
-        public double B { get; set; }
+        public double Red { get; set; }
+        public double Green { get; set; }
+        public double Blue { get; set; }
+        public double Yellow { get; set; }
     }
 }

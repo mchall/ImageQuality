@@ -6,25 +6,31 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	ColorInfo::ColorInfo(double r, double g, double b)
+	ColorInfo::ColorInfo(double red, double green, double blue, double yellow)
 	{
-		_r = r;
-		_g = g;
-		_b = b;
+		_red = red;
+		_green = green;
+		_blue = blue;
+		_yellow = yellow;
 	}
 
-	double ColorInfo::R::get()
+	double ColorInfo::Red::get()
 	{
-		return _r;
+		return _red;
 	}
 
-	double ColorInfo::G::get()
+	double ColorInfo::Green::get()
 	{
-		return _g;
+		return _green;
 	}
 
-	double ColorInfo::B::get()
+	double ColorInfo::Blue::get()
 	{
-		return _b;
+		return _blue;
+	}
+
+	double ColorInfo::Yellow::get()
+	{
+		return _yellow;
 	}
 }

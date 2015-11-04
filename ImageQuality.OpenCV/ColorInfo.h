@@ -15,16 +15,18 @@ namespace ImageQuality {
 	public ref class ColorInfo
 	{
 	private:
-		double _r;
-		double _g;
-		double _b;
+		double _red;
+		double _green;
+		double _blue;
+		double _yellow;
 
 	internal:
-		ColorInfo(double r, double g, double b);
+		ColorInfo(double red, double green, double blue, double yellow);
 
 	public:
-		property double R { double get(); }
-		property double G { double get(); }
-		property double B { double get(); }
+		property double Red { double get(); }
+		property double Green { double get(); }
+		property double Blue { double get(); }
+		property double Yellow { double get(); }
 	};
 }

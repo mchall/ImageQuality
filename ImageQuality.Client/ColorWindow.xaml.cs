@@ -33,7 +33,7 @@ namespace ImageQualityClient
                 var sw = Stopwatch.StartNew();
 
                 var info = _color.ColorInfo(fileBytes);
-                ResultText.Text = String.Format("R: {0}\nG: {1}\nB: {2}", Math.Round(info.R, 2), Math.Round(info.G, 2), Math.Round(info.B, 2));
+                ResultText.Text = String.Format("Red: {0}\nGreen: {1}\nBlue: {2}\nYellow: {3}", Math.Round(info.Red, 2), Math.Round(info.Green, 2), Math.Round(info.Blue, 2), Math.Round(info.Yellow, 2));
 
                 sw.Stop();
                 TimeText.Text = String.Format("{0}ms", sw.ElapsedMilliseconds);
