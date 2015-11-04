@@ -59,6 +59,12 @@ namespace ImageQualityClient
             window.ShowDialog();
         }
 
+        private void ColorInfo_Click(object sender, RoutedEventArgs e)
+        {
+            ColorWindow window = new ColorWindow();
+            window.ShowDialog();
+        }
+
         private void Bulk_Click(object sender, RoutedEventArgs e)
         {
             var progress = new ProgressWindow();

@@ -10,6 +10,7 @@
             <Button Height="30" Margin="5" Width="250" Content="Blur Measure Demo" Click="Blur_Click" FontSize="18" />
             <Button Height="30" Margin="5" Width="250" Content="Intensity Measure Demo" Click="Intensity_Click" FontSize="18" />
             <Button Height="30" Margin="5" Width="250" Content="Histogram Comparison Demo" Click="HistogramComparison_Click" FontSize="18" />
+            <Button Height="30" Margin="5" Width="250" Content="Color Info Demo" Click="ColorInfo_Click" FontSize="18" />
             <Separator/>
             <Button Height="30" Margin="5" Width="250" Content="- Bulk Test -" Click="Bulk_Click" FontSize="18" />
         </StackPanel>

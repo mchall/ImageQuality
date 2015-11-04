@@ -43,6 +43,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorHelper.cs" />
     <Compile Include="Histogram.cs" />
     <Compile Include="IntensityMeasure.cs" />
     <Compile Include="OcrEngine.cs" />

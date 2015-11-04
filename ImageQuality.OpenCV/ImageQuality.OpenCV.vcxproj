@@ -108,6 +108,8 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
   <ItemGroup>
     <ClInclude Include="BlurMeasure.h" />
     <ClInclude Include="BrisqueFeatureExtractor.h" />
+    <ClInclude Include="ColorInfo.h" />
+    <ClInclude Include="ColorMeasure.h" />
     <ClInclude Include="GetRegionsResult.h" />
     <ClInclude Include="Histogram.h" />
     <ClInclude Include="IntensityMeasure.h" />
@@ -119,6 +121,8 @@ if %errorlevel% leq 1 exit 0 else exit %errorlevel%</Command>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="BlurMeasure.cpp" />
     <ClCompile Include="BrisqueFeatureExtractor.cpp" />
+    <ClCompile Include="ColorInfo.cpp" />
+    <ClCompile Include="ColorMeasure.cpp" />
     <ClCompile Include="GetRegionsResult.cpp" />
     <ClCompile Include="Histogram.cpp" />
     <ClCompile Include="IntensityMeasure.cpp" />
