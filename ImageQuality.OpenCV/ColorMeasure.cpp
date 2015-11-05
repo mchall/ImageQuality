@@ -15,8 +15,8 @@ namespace ImageQuality
 
 		Mat red, blue, green, yellow;
 		inRange(channels[0], 0, 10, red);
-		inRange(channels[0], 50, 65, green);
-		inRange(channels[0], 100, 115, blue);
+		inRange(channels[0], 35, 75, green);
+		inRange(channels[0], 90, 125, blue);
 		inRange(channels[0], 16, 21, yellow);
 
 		double image_size = image.cols * image.rows;
