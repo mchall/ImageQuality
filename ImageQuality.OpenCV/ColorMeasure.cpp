@@ -13,11 +13,19 @@ namespace ImageQuality
 		vector<Mat> channels;
 		split(image, channels);
 
+		Mat saturation;
+		inRange(channels[1], 50, 255, saturation);
+
 		Mat red, blue, green, yellow;
 		inRange(channels[0], 0, 10, red);
 		inRange(channels[0], 35, 75, green);
 		inRange(channels[0], 90, 125, blue);
 		inRange(channels[0], 16, 21, yellow);
+
+		bitwise_and(saturation, red, red);
+		bitwise_and(saturation, green, green);
+		bitwise_and(saturation, blue, blue);
+		bitwise_and(saturation, yellow, yellow);
 
 		double image_size = image.cols * image.rows;
 		double r_percent = ((double)cv::countNonZero(red)) / image_size;
