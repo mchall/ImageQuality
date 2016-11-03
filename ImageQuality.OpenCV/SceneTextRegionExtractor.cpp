@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<GetRegionsResult^>^ SceneTextRegionExtractor::SimpleWatermark(array<byte>^ buffer)
+	IList<GetRegionsResult^>^ SceneTextRegionExtractor::SimpleWatermark(cli::array<byte>^ buffer)
 	{
 		Mat img = ReadImage(buffer);
 		List<GetRegionsResult^>^ list = gcnew List<GetRegionsResult^>(4);
@@ -75,7 +75,7 @@ namespace ImageQuality
 					Mat r = getRotationMatrix2D(pt, angle, 1);
 
 					warpAffine(highlighted, highlighted, r, Size(len, len));
-					array<byte>^ b = ToByteArray(highlighted, ".jpg");
+					cli::array<byte>^ b = ToByteArray(highlighted, ".jpg");
 
 					return GetRegions(b);
 				}
@@ -85,7 +85,7 @@ namespace ImageQuality
 		return nullptr;
 	}
 
-	GetRegionsResult^ SceneTextRegionExtractor::GetRegions(array<byte>^ buffer)
+	GetRegionsResult^ SceneTextRegionExtractor::GetRegions(cli::array<byte>^ buffer)
 	{
 		List<Region^>^ list = gcnew List<Region^>(5);
 		Mat image = ReadImage(buffer);
@@ -446,19 +446,19 @@ namespace ImageQuality
 		return found ? bestAngle : Nullable<float>();
 	}
 
-	Mat SceneTextRegionExtractor::ReadImage(array<byte>^ buffer)
+	Mat SceneTextRegionExtractor::ReadImage(cli::array<byte>^ buffer)
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
 		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
 	}
 
-	array<byte>^ SceneTextRegionExtractor::ToByteArray(Mat image, const std::string& extension)
+	cli::array<byte>^ SceneTextRegionExtractor::ToByteArray(Mat image, const std::string& extension)
 	{
 		vector<byte> buffer;
 		imencode(extension, image, buffer);
 
-		array<byte>^ bytes = gcnew array<byte>(buffer.size());
+		cli::array<byte>^ bytes = gcnew cli::array<byte>(buffer.size());
 
 		UnmanagedMemoryStream^ sourceStream = gcnew UnmanagedMemoryStream(buffer.data(), buffer.size());
 		sourceStream->Read(bytes, 0, buffer.size());

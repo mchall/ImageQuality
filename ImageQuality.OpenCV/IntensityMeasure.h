@@ -10,9 +10,9 @@ namespace ImageQuality {
 	public ref class IntensityMeasure
 	{
 	public:
-		double IntensityTest(array<byte>^ buffer);
+		double IntensityTest(cli::array<byte>^ buffer);
 
 	private:
-		Mat ReadImage(array<byte>^ buffer);
+		Mat ReadImage(cli::array<byte>^ buffer);
 	};
 }

@@ -17,13 +17,13 @@ namespace ImageQuality {
 	{
 	private:
 		IList<Region^>^ _regions;
-		array<byte>^ _debug;
+		cli::array<byte>^ _debug;
 
 	internal:
-		GetRegionsResult(IList<Region^>^ regions, array<byte>^ debug);
+		GetRegionsResult(IList<Region^>^ regions, cli::array<byte>^ debug);
 
 	public:
 		property IList<Region^>^ Regions { IList<Region^>^ get(); }
-		property array<byte>^ Debug { array<byte>^ get(); }
+		property cli::array<byte>^ Debug { cli::array<byte>^ get(); }
 	};
 }

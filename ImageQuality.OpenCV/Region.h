@@ -19,11 +19,11 @@ namespace ImageQuality {
 		int _y;
 		int _width;
 		int _height;
-		array<byte>^ _tiff;
+		cli::array<byte>^ _tiff;
 
 	internal:
-		Region(Rect rect, array<byte>^ tiff);
-		Region(int x, int y, int width, int height, array<byte>^ tiff);
+		Region(Rect rect, cli::array<byte>^ tiff);
+		Region(int x, int y, int width, int height, cli::array<byte>^ tiff);
 
 	public:
 		property int X { int get(); }
@@ -32,6 +32,6 @@ namespace ImageQuality {
 		property int Width { int get(); }
 		property int Height { int get(); }
 
-		property array<byte>^ Tiff { array<byte>^ get(); }
+		property cli::array<byte>^ Tiff { cli::array<byte>^ get(); }
 	};
 }

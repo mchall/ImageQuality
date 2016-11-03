@@ -18,8 +18,8 @@ namespace ImageQuality {
 		const int MinHeight = 12;
 
 	public:
-		GetRegionsResult^ GetRegions(array<byte>^ buffer);
-		IList<GetRegionsResult^>^ SimpleWatermark(array<byte>^ buffer);
+		GetRegionsResult^ GetRegions(cli::array<byte>^ buffer);
+		IList<GetRegionsResult^>^ SimpleWatermark(cli::array<byte>^ buffer);
 
 	private:
 		vector<Rect> MergeRects(int width, int height, vector<Rect> rects, int expand);
@@ -29,8 +29,8 @@ namespace ImageQuality {
 		bool NeedsInverse(Mat roi);
 		Nullable<float> FindBestAngle(vector<float> angles);
 		GetRegionsResult^ DetectAndRotate(Mat img, Scalar lower, Scalar upper);
-		array<byte>^ ToByteArray(Mat image, const string& extension);
+		cli::array<byte>^ ToByteArray(Mat image, const string& extension);
 		void WriteToStream(const std::string& extension, Mat image, Stream^ stream);
-		Mat ReadImage(array<byte>^ buffer);
+		Mat ReadImage(cli::array<byte>^ buffer);
 	};
 }

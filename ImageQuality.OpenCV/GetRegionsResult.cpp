@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	GetRegionsResult::GetRegionsResult(IList<Region^>^ regions, array<byte>^ debug)
+	GetRegionsResult::GetRegionsResult(IList<Region^>^ regions, cli::array<byte>^ debug)
 	{
 		_regions = regions;
 		_debug = debug;
@@ -17,7 +17,7 @@ namespace ImageQuality
 		return _regions;
 	}
 
-	array<byte>^ GetRegionsResult::Debug::get()
+	cli::array<byte>^ GetRegionsResult::Debug::get()
 	{
 		return _debug;
 	}

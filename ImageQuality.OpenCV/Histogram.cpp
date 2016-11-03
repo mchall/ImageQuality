@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	double Histogram::Compare(array<byte>^ left, array<byte>^ right)
+	double Histogram::Compare(cli::array<byte>^ left, cli::array<byte>^ right)
 	{
 		Mat l = ReadImage(left);
 		Mat r = ReadImage(right);
@@ -35,7 +35,7 @@ namespace ImageQuality
 		return compareHist(flatLeft, flatRight, CV_COMP_CHISQR);
 	}
 
-	Mat Histogram::ReadImage(array<byte>^ buffer)
+	Mat Histogram::ReadImage(cli::array<byte>^ buffer)
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);

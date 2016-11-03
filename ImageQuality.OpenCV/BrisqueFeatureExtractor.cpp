@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(array<byte>^ buffer)
+	IList<double>^ BrisqueFeatureExtractor::BrisqueFeatures(cli::array<byte>^ buffer)
 	{
 		pin_ptr<byte> p = &buffer[0];
 		Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);

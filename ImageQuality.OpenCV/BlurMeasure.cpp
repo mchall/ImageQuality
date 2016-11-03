@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	double BlurMeasure::BlurTest(array<byte>^ buffer)
+	double BlurMeasure::BlurTest(cli::array<byte>^ buffer)
 	{
 		Mat image = ReadImage(buffer);
 		resize(image, image, Size(512, 512));
@@ -24,7 +24,7 @@ namespace ImageQuality
 		return val * val;
 	}
 
-	Mat BlurMeasure::ReadImage(array<byte>^ buffer)
+	Mat BlurMeasure::ReadImage(cli::array<byte>^ buffer)
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);

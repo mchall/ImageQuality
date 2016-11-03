@@ -6,7 +6,7 @@ using namespace cv;
 
 namespace ImageQuality
 {
-	ColorInfo^ ColorMeasure::GetColorInfo(array<byte>^ buffer)
+	ColorInfo^ ColorMeasure::GetColorInfo(cli::array<byte>^ buffer)
 	{
 		Mat image = ReadImage(buffer);
 
@@ -36,7 +36,7 @@ namespace ImageQuality
 		return gcnew ColorInfo(r_percent, g_percent, b_percent, y_percent);
 	}
 
-	Mat ColorMeasure::ReadImage(array<byte>^ buffer)
+	Mat ColorMeasure::ReadImage(cli::array<byte>^ buffer)
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);

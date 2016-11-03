@@ -10,9 +10,9 @@ namespace ImageQuality {
 	public ref class Histogram
 	{
 	public:
-		double Compare(array<byte>^ left, array<byte>^ right);
+		double Compare(cli::array<byte>^ left, cli::array<byte>^ right);
 
 	private:
-		Mat ReadImage(array<byte>^ buffer);
+		Mat ReadImage(cli::array<byte>^ buffer);
 	};
 }

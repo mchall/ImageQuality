@@ -12,9 +12,9 @@ namespace ImageQuality {
 	public ref class ColorMeasure
 	{
 	public:
-		ColorInfo^ GetColorInfo(array<byte>^ buffer);
+		ColorInfo^ GetColorInfo(cli::array<byte>^ buffer);
 
 	private:
-		Mat ReadImage(array<byte>^ buffer);
+		Mat ReadImage(cli::array<byte>^ buffer);
 	};
 }
