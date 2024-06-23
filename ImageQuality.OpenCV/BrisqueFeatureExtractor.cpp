@@ -10,7 +10,7 @@ namespace ImageQuality
 	{
 		pin_ptr<byte> p = &buffer[0];
 		Mat data(1, buffer->Length, CV_8U, (void*)p, CV_AUTO_STEP);
-		Mat image = imdecode(data, CV_LOAD_IMAGE_GRAYSCALE);
+		Mat image = imdecode(data, cv::IMREAD_GRAYSCALE);
 
 		int newHeight = (256 / double(image.cols)) * image.rows;
 		resize(image, image, Size(256, newHeight));

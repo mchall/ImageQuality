@@ -40,7 +40,7 @@ namespace ImageQuality
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		Mat img = imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		Mat img = imdecode(datax, cv::IMREAD_COLOR);
 		cvtColor(img, img, CV_BGR2HSV);
 		return img;
 	}

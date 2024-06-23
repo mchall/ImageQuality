@@ -39,6 +39,6 @@ namespace ImageQuality
 	{
 		pin_ptr<byte> px = &buffer[0];
 		Mat datax(1, buffer->Length, CV_8U, (void*)px, CV_AUTO_STEP);
-		return imdecode(datax, CV_LOAD_IMAGE_COLOR);
+		return imdecode(datax, cv::IMREAD_COLOR);
 	}
 }
